@@ -5,7 +5,7 @@ import { getPostWithId } from '@/lib/actions/Post.actions';
 import { IPost } from '@/lib/database/models/Post.model';
 import Image from 'next/image';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { useContext, useEffect, useState } from 'react'
+import React, { Suspense, useContext, useEffect, useState } from 'react'
 import moment from 'moment';
 import PostOptions from '@/components/related/PostOptions';
 import { ChatContext } from '@/components/Message/ChatContext';
@@ -171,5 +171,12 @@ const CommentSection = () => {
   )
 }
 
-export default CommentSection;
+const CommentSectionSuspense=()=>{
+    <Suspense fallback={<Loader />}>
+        <CommentSection />
+    </Suspense>
+}
+
+export default CommentSectionSuspense;
+
 
