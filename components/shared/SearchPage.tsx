@@ -1,12 +1,13 @@
 "use client"
 
 import Image from 'next/image'
-import React, { useEffect, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { Input } from '../ui/input'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils'
+import Loader from './Loader'
 
-const SearchPage = () => {
+const SearchPageSuspense = () => {
     const [text, setText] = useState('');
     const searchParams=useSearchParams();
     const router=useRouter();
@@ -55,4 +56,11 @@ const SearchPage = () => {
   )
 }
 
-export default SearchPage
+
+const SearchPage=()=>{
+    <Suspense fallback={<Loader />}>
+        <SearchPageSuspense />
+    </Suspense>
+}
+
+export default SearchPage;

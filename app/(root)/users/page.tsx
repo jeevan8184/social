@@ -1,15 +1,16 @@
 "use client"
 
 import { ChatContext } from '@/components/Message/ChatContext'
+import Loader from '@/components/shared/Loader';
 import MapShareUsers from '@/components/shared/MapShareUsers';
 import { Button } from '@/components/ui/button';
 import { IUser } from '@/lib/database/models/User.model';
 import { ArrowLeftIcon } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useContext, useState } from 'react'
+import React, { Suspense, useContext, useState } from 'react'
 
-const ShowUsersPage = () => {
+const ShowUsersPageSuspense = () => {
     
     const {currUser,setpostAndUsers,isPending}=useContext(ChatContext);
     const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
@@ -74,4 +75,13 @@ const ShowUsersPage = () => {
   )
 }
 
+
+const ShowUsersPage=()=>{
+    <Suspense fallback={<Loader />}>
+        <ShowUsersPageSuspense />
+    </Suspense>
+}
+
 export default ShowUsersPage;
+
+
