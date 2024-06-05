@@ -1,0 +1,32 @@
+"use client"
+import { IComment } from '@/lib/database/models/Comments.model';
+import { IPost } from '@/lib/database/models/Post.model';
+import React, { Dispatch, SetStateAction } from 'react';
+import MapComments from './MapComments';
+
+interface CommentsPageProps {
+    comments:IComment[],
+    setComments:Dispatch<SetStateAction<IComment[]>>,
+    post:IPost,
+}
+
+const CommentsPage = ({comments,setComments,post}:CommentsPageProps) => {
+
+
+  return (
+    <section className=' w-full flex pl-4 max-md:pl-2'>
+        <div className=' flex flex-col gap-6 w-full'>
+            {comments.length>0 && comments.map((c,i)=> (
+                <MapComments 
+                    key={i} 
+                    c={c}
+                    post={post}
+                    setComments={setComments}
+                />
+            ))}
+        </div>
+    </section>
+  )
+}
+
+export default CommentsPage;

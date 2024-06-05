@@ -1,0 +1,137 @@
+"use client"
+import { IUser } from '@/lib/database/models/User.model'
+import Image from 'next/image'
+import React, { useContext, useEffect, useState } from 'react'
+import { Button } from '../ui/button'
+import { usePathname, useRouter } from 'next/navigation'
+import { addFriend } from '@/lib/actions/User.actions'
+import { createChat } from '@/lib/actions/Chat.actions'
+import ShowImg from '../related/ShowImg'
+import { ChatContext } from '../Message/ChatContext'
+import ProfileShares from './ProfileShares'
+
+interface profileParams {
+    user:IUser,
+    type?:'user'
+}
+
+const ProfilePage = ({user,type}:profileParams) => {
+  const router=useRouter();
+  const [isFriend, setIsFriend] = useState<boolean>();
+  const [isPending, setIsPending] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedImg, setSelectedImg] = useState<string | null>(null);
+  const {currUser}=useContext(ChatContext);
+
+  const pathname=usePathname();
+
+  useEffect(()=> {
+    if(type==='user') {
+      const x=currUser?.friends?.some((newUser:IUser)=> newUser._id===user._id);
+      if(x) setIsFriend(true);
+    }
+    
+  },[user,type])
+
+  const handleChange=async()=> {
+
+    try {
+      setIsPending(true);
+      const addedFriend=await addFriend({userId:user._id,path:pathname})
+      if(addedFriend?.message)  return setIsFriend((prev)=> !prev);
+
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setIsPending(false);
+    }
+  }
+
+  const handleMessage=async()=> {
+    const createdChat=await createChat({senderId:currUser?._id,receiverId:user._id});
+    if(createdChat) router.push(`/message/${createdChat._id}`);
+
+  }
+
+  const handleImage=()=>{
+    setIsOpen(false);
+    setSelectedImg(null);
+  }
+
+  return (
+
+    <div className=' w-full pr-1'>
+        <div className=' flex flex-col gap-4 lg:gap-8 w-full'>
+          <div className=' flex flex-col gap-4  '>
+            <div className=' flex gap-3 lg:gap-16'>
+              <div className=''>
+                <div className=' mx-auto relative cursor-pointer h-48 w-48 max-md:h-36 max-md:w-36 shadow-md
+                    rounded-full object-contain object-center overflow-hidden  p-1'>
+                    <Image
+                      src={user.photo}
+                      layout='fill'
+                      alt='image'
+                      className=''
+                      onClick={()=>{
+                        setSelectedImg(user.photo);
+                        setIsOpen(true);
+                      }}
+                    />
+                </div>
+              </div>
+              <div className=' my-4 flex flex-1 flex-col gap-6 max-sm:gap-4'>
+                 <div className=' flex flex-col gap-2'>
+                    <div className=' flex w-full gap-12 max-md:gap-6'>
+                        <div className=' flex flex-col gap-1 items-center cursor-pointer'>
+                          <label className=' bg-grey-50 dark:bg-gradient-to-b dark:bg-transparent px-4 py-1.5 rounded-xl font-semibold'>Followers</label>
+                          <span className=' font-bold'>100k</span>
+                        </div>
+                        <div className=' flex flex-col gap-1 items-center cursor-pointer'>
+                          <label className='bg-grey-50 dark:bg-transparent dark:bg-gradient-to-b px-4 py-1.5 rounded-xl font-semibold'>Friends</label>
+                          <span className=' font-bold'>100</span>
+                        </div>
+                    </div>
+                 </div>
+                 <div className=''>
+                    {type==='user' && (
+                      <div className=' flex gap-8'>
+                        <Button
+                          className=' rounded-full px-6 text-white'
+                          onClick={()=> {
+                            handleMessage();
+                          }}
+                        >
+                          message
+                        </Button>
+                        <Button
+                          className=' rounded-full px-6 text-white'
+                          disabled={isPending}
+                          onClick={handleChange}
+                        >
+                          {isPending ? 'processing' : isFriend ? 'unfriend':'friend'}
+                        </Button>
+                    </div>
+                    )}
+                  </div>
+              </div>
+            </div>
+            <div className=' flex flex-col'>
+              <h2 className=' font-semibold text-2xl'>{user?.username}</h2>
+              <p className=' text-md text-gray-600 text-ellipsis'>{user?.bio}</p>
+            </div>
+            <div className=' w-full px-0 mr-1'>
+               <ProfileShares
+                  user={user} 
+               />
+            </div>
+          </div>
+        </div>
+        {selectedImg && (
+          <ShowImg open={isOpen} handleImage={handleImage} img={selectedImg} />
+        )}
+    </div>
+  )
+}
+
+export default ProfilePage;
+

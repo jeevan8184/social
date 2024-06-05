@@ -1,0 +1,144 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* :root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+} */
+
+/* @media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+} */
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+    
+  * {
+    @apply border-border m-0 p-0 mx-0
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  .flex-start {
+    @apply flex items-start justify-start
+  }
+  .flex-between {
+    @apply flex justify-between items-center
+  }
+  .flex-center {
+    @apply flex items-center justify-center
+  }
+  .flex-end {
+    @apply flex justify-end items-end
+  }
+  .input{
+    @apply px-5 py-3 rounded-full border-none focus-visible:ring-offset-0 focus-visible:ring-0 bg-gray-50 
+  }
+  .wrapper {
+    @apply max-w-6xl mx-0 lg:mx-auto xl:px-0 w-full 
+  }
+  .form{
+    @apply flex flex-col mx-auto my-auto rounded-2xl shadow-lg max-w-md px-5 py-4 w-full
+  }
+  .userForm {
+    @apply flex flex-col rounded-2xl max-w-3xl px-5 py-4 w-full
+  }
+  .textarea{
+    @apply px-5 py-3 rounded-2xl border-none focus-visible:ring-offset-0 focus-visible:ring-0 bg-gray-50 
+  }
+  .navbar{
+    @apply max-w-6xl mx-0 lg:mx-auto xl:px-1 w-full px-4 py-3 rounded dark:bg-gray-900 
+       bg-gray-50 bg-opacity-95 text-gray-700  border-gray-200 border-b shadow-md dark:border-black
+  }
+  .link {
+    @apply flex flex-row gap-2 items-center px-5 py-2 rounded-2xl w-full transition duration-200 dark:bg-gray-600
+  }
+  .sidebar{
+    @apply  max-sm:hidden min-h-screen flex sticky top-0 right-0 max-w-[280px] z-40 dark:bg-gray-800 dark:text-white
+      max-md:max-w-[200px] w-full px-1.5 pt-8 pb-4 bg-gray-200 bg-opacity-95 shadow-inner
+  }
+
+  /* F5F5F5 */
+
+  .link1 {
+    @apply flex flex-col items-center rounded-2xl w-fit px-2
+  }
+  .bottombar {
+    @apply border-t-0  bg-[#F5F5F5] w-full sm:hidden flex fixed bottom-0 px-2 pt-1
+  }
+  .footer {
+    @apply w-full bg-gray-100 py-4 pb-8
+  }
+  .profile{
+    @apply px-3 py-6
+  }
+  .type{
+    @apply border border-gray-600 w-96  bg-white px-5 rounded-full flex-center focus-visible:ring-0 focus-visible:ring-offset-0
+  }
+  .hi {
+    @apply cursor-pointer px-4 py-2 bg-blue-500/10 rounded-full text-blue-500 flex-center w-fit
+  } 
+  .msg{
+    @apply font-[500] px-3 py-0.5 rounded-xl shadow-sm flex flex-col w-fit cursor-pointer border border-gray-200
+  }
+  .dropdown {
+    @apply absolute top-2 right-0 rounded bg-white
+  }
+  .photo {
+    @apply relative h-48 w-48 object-contain object-center overflow-hidden shadow-md
+  }
+  .edit {
+    @apply  border-none shadow-2xl z-50 rounded-xl m-0 p-0 absolute top-0 right-0 px-1 py-1.5 bg-white
+  }
+  
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .tab{
+    @apply flex gap-3 px-6 lg:px-14  py-2 rounded-xl bg-gray-200 active:bg-white border-2 
+      border-gray-300 active:font-semibold dark:bg-white dark:text-black
+  }
+  .text {
+    @apply  pl-8 text-[15px] text-wrap truncate text-clip w-fit
+  }
+  .item {
+    @apply dark:hover:bg-gray-900 cursor-pointer px-3 py-1 rounded
+  }
+  .down {
+    @apply dark:bg-black bg-white z-50 rounded-xl border-none shadow-md border-gray-600  dark:border-gray-800 p-1.5
+  }
+  .cancel{
+    @apply bg-gray-200 rounded-full hover:bg-gray-300 dark:bg-gray-700
+  }
+
+  .tab1 {
+    @apply text-[18px] px-4 py-2 bg-transparent  active:border-blue-500
+  }
+
+}
+
