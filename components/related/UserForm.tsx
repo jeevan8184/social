@@ -14,7 +14,7 @@ import { Textarea } from '../ui/textarea'
 import Image from 'next/image'
 import { useUploadThing } from '@/lib/uploadthing'
 import { createUser } from '@/lib/actions/User.actions'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 interface UseFormprops {
     authId:string | undefined
@@ -24,6 +24,7 @@ const UserForm = () => {
     const [Files, setFiles] = useState<File[]>([]);
     const {startUpload}=useUploadThing('imageUploader');
     const router=useRouter();
+    const pathname=usePathname();
 
     const form=useForm<z.infer<typeof UserSchema>>({
         resolver:zodResolver(UserSchema),
@@ -44,6 +45,7 @@ const UserForm = () => {
                 username:values.username,
                 bio:values.bio,
                 photo:uploadImage,
+                path:pathname
             })
 
             console.log('newUser',newUser);
@@ -58,7 +60,7 @@ const UserForm = () => {
 
   return (
     <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className=' space-y-8' >
+        <form onSubmit={form.handleSubmit(onSubmit)} className=' space-y-8 pb-8' >
             <FormField
                 control={form.control}
                 name='username'
@@ -106,7 +108,7 @@ const UserForm = () => {
             </div>
             <Button 
                 type='submit'
-                className=' rounded-full px-6 py-2'
+                className=' rounded-full px-6 py-2 mt-4'
                 disabled={form.formState.isSubmitting}
             >
                 {form.formState.isSubmitting ? (

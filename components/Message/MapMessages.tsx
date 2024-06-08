@@ -134,7 +134,7 @@ const MapMessages = ({isDelTrue}:{isDelTrue:boolean}) => {
                 })}
               </div>
             ):(
-              <div className=' flex-center min-h-screen'>
+              <div className=' flex-center mt-10'>
                 <p 
                   className={` hi ${isActive && 'hidden'}`}
                   onClick={()=> {
@@ -143,7 +143,7 @@ const MapMessages = ({isDelTrue}:{isDelTrue:boolean}) => {
                 >
                   Say 'Hi' 
                 </p>
-              </div>
+              </div> 
             )}
           </div>
           <div ref={scroll} />

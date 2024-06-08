@@ -14,20 +14,7 @@ import { cache } from "react";
 import Post, { IPost } from "../database/models/Post.model";
 import Comment from "../database/models/Comments.model";
 
-export const fetchUserByAuth=async(authId:string)=> {
-
-    try {
-        await connectToDB();
-        const existUser=await User.findOne({authId});
-
-        return JSON.parse(JSON.stringify(existUser));
-
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-export const getUserById=async(id:string)=> {
+export const getUserById=async(id:string,path:string)=> {
 
     try {
         await connectToDB();
@@ -38,6 +25,7 @@ export const getUserById=async(id:string)=> {
                 select:'_id username photo'
             })
 
+        revalidatePath(path);
         return JSON.parse(JSON.stringify(existUser));
     } catch (error) {
         console.log(error);
@@ -65,7 +53,7 @@ export const getUser=cache(async()=> {
     }
 })
 
-export const createUser=async({username,bio,photo}:CreateUserParams)=> {
+export const createUser=async({username,bio,photo,path}:CreateUserParams)=> {
     const {authId}=await verifySession();
 
     try {
@@ -75,6 +63,7 @@ export const createUser=async({username,bio,photo}:CreateUserParams)=> {
             username,bio,photo,authId
         })
 
+        revalidatePath(path);
         console.log('newUser',newUser);
         return JSON.parse(JSON.stringify(newUser));
     } catch (error) {
@@ -124,7 +113,7 @@ export const addFriend=async({userId,path}:addFriendParams)=> {
 
     try {
         await connectToDB();
-        const existUser=await User.findOne({authId});
+        const existUser=await User.findOne({authId})
         
         if(!existUser.friends.includes(userId)) {
             existUser.friends.push(userId);
@@ -133,15 +122,23 @@ export const addFriend=async({userId,path}:addFriendParams)=> {
             existUser.friends=existUser.friends.filter((id: string)=> id.toString()!==userId);
             await existUser.save();
         }
-        console.log('existUser',existUser);
+
+        const user=await User.findOne(existUser._id)
+            .populate({
+                path:'friends',
+                model:User,
+                select:'_id username photo'
+            })
+        
+        console.log('addfriend',user);
         revalidatePath(path);
-        return {message:'ok',status:200}
+        return JSON.parse(JSON.stringify(user));
     } catch (error) {
         console.log(error);
     }
 }
 
-export const savePostToUser=async(postId:string,userId:string)=>{
+export const savePostToUser=async(postId:string,userId:string,path:string)=>{
 
     try {
         await connectToDB();
@@ -163,6 +160,7 @@ export const savePostToUser=async(postId:string,userId:string)=>{
             await user.save();
         }
 
+        revalidatePath(path);
         console.log('user',user);
         return JSON.parse(JSON.stringify(user));
     } catch (error) {
@@ -229,7 +227,8 @@ export const getRepliesOfUser=async(userId:string,path:string)=>{
                 }
                 return acc;
             },[]);
-
+        
+        revalidatePath(path);
         return JSON.parse(JSON.stringify(allReplies));
     } catch (error) {
         console.log(error);

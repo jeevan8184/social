@@ -16,7 +16,7 @@ const NewImages = () => {
         <div className=' relative snap-x snap-mandatory overflow-x-auto no-scrollbar
            bg-grey-50 dark:bg-dark-4 max-w-4xl max-lg:max-w-xl max-md:max-w-md pl-2 lg:px-6 h-full py-4 px-2 '
         >
-            <div className=' flex gap-8'>
+            <div className=' flex gap-8 max-sm:pl-2'>
                 {HomeImages.map((images,i)=> (
 
                     <div className=' snap-center shrink-0' key={i}>

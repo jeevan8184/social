@@ -31,12 +31,10 @@ const Fileuploader = ({value,handleChange,setFiles}:FileuploaderProps) => {
     <div {...getRootProps()} className=' flex-center cursor-pointer bg-grey-50 dark:bg-dark-4 rounded-2xl h-72'>
       <input {...getInputProps()} />
       {value ? (
-        <div className=' relative h-72 w-full cursor-pointer bg-grey-50 dark:bg-dark-4 overflow-hidden '>
+        <div className=' relative h-64 w-full cursor-pointer bg-grey-50 dark:bg-dark-4 rounded-xl overflow-hidden '>
           <Image
             src={value}
             layout='fill'
-            // objectFit='cover'
-            // objectPosition='center'
             alt='image'
             className=' w-full h-full '
           />

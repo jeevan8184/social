@@ -17,7 +17,7 @@ const Navbar = () => {
   return (
     <section className=' navbar px-6'>
       <div className=' flex flex-row justify-between items-center z-0'>
-        <div className=' flex gap-3  pl-5 items-center'>
+        <div className=' flex gap-3  pl-5 max-sm:pl-0 items-center'>
             <Image
               src='/assets/icon/logo.svg'
               height={60}
@@ -25,7 +25,7 @@ const Navbar = () => {
               alt='image'
               className=''
             />
-            <h1 className=" font-bold text-3xl font-serif from-neutral-900 dark:text-light-1">Social Media</h1>
+            <h1 className=" font-bold text-3xl font-serif from-neutral-900 dark:text-light-1 max-sm:hidden">Social Media</h1>
         </div>
         <div className=' flex items-center gap-2'>
             <div className=''>

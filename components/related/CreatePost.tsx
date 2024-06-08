@@ -1,5 +1,5 @@
 "use client"
-import React, { useCallback, useContext, useState } from 'react'
+import React, { useCallback, useContext, useMemo, useState } from 'react'
 import { ChatContext } from '../Message/ChatContext'
 import Loader from '../shared/Loader';
 import Image from 'next/image';
@@ -32,7 +32,9 @@ const CreatePost = () => {
     
 
     const onDrop=useCallback((acceptedFiles:FileWithPath[])=> {
-        setFiles((prev)=> [...prev,acceptedFiles[0]]);
+        for(let i=0;i<acceptedFiles.length;i++) {
+            setFiles((prev)=> [...prev,acceptedFiles[i]]);
+        }
     },[])
 
     const {getRootProps,getInputProps}=useDropzone({
@@ -75,8 +77,12 @@ const CreatePost = () => {
         }
     }
 
+    const filePreiews=useMemo(()=> {
+        return Files.map((file)=> ({file,url:URL.createObjectURL(file)}))
+    },[Files]);
+
   return (
-            <div className=' flex flex-col my-2 w-full pr-2'>
+            <div className=' flex flex-col my-2 w-full pr-2 pb-10'>
                 <p className=' pl-4 pb-4'>create new posts and explore what like in realistic that changes your life</p>
                 <div className=' flex gap-2'>
                     <div className=' flex-between flex-col gap-0.5'>
@@ -97,7 +103,7 @@ const CreatePost = () => {
                             <p className=' font-semibold'>{currUser.username}</p>
                             <p className=' text-[13px]'>{formatDateTimeOpt(currUser.createdAt).dateOnly}</p>
                         </div>
-                        <div className=' flex flex-col gap-4'>
+                        <div className=' flex flex-col gap-4 -ml-2'>
                             <div className=' flex w-full max-md:flex-col gap-4 justify-between'>
                                 <Textarea
                                     className=' max-w-md border-gray-200 rounded-xl placeholder:text-gray-600 '
@@ -110,6 +116,7 @@ const CreatePost = () => {
                                     value={tags}
                                     onChange={(e)=> setTags(e.target.value)}
                                     placeholder='#tag'
+                                    onClick={(e)=> e.stopPropagation()}
                                 />
                             </div>
                             <div className=' flex gap-4'>
@@ -127,14 +134,14 @@ const CreatePost = () => {
                             {Files.length>0 && (
                             <div className=' flex flex-col  p-0'>
                                  <div className=' relative mt-4 max-w-3xl max-lg:max-w-xl w-full overflow-x-auto bg-grey-100 
-                                     snap-x snap-proximity h-full no-scrollbar py-4 max-md:max-w-sm 
+                                     snap-x snap-proximity h-full no-scrollbar py-4 max-md:max-w-sm max-sm:w-80
                                  '>
-                                     <div className=' flex gap-8'>
-                                         {Files.map((file,i)=> (
+                                     <div className=' flex gap-8 max-sm:gap-6'>
+                                         {filePreiews?.map(({file,url},i:number)=> (
                                              <div className=' snap-center shrink-0' key={i}>
                                                  <div className=' relative h-72 w-72 group '>
                                                      <Image
-                                                        src={URL.createObjectURL(file)}
+                                                        src={url}
                                                         layout='fill'
                                                         alt='image'
                                                         className=' rounded-xl object-cover group-hover:opacity-85 transition-opacity'
@@ -143,8 +150,8 @@ const CreatePost = () => {
                                                          rounded-full p-2 cursor-pointer bg-grey-50 dark:bg-gray-800'
                                                          onClick={()=> {
                                                              setFiles((prev)=> {
-                                                                 const newFiles=prev.filter((f)=> f !==file)
-                                                                 return newFiles
+                                                                const newFiles=prev.filter((f)=> f !==file)
+                                                                return newFiles
                                                              })
                                                          }}
                                                      >

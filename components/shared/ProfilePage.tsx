@@ -21,7 +21,7 @@ const ProfilePage = ({user,type}:profileParams) => {
   const [isPending, setIsPending] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
-  const {currUser}=useContext(ChatContext);
+  const {currUser,setCurrUser}=useContext(ChatContext);
 
   const pathname=usePathname();
 
@@ -37,8 +37,11 @@ const ProfilePage = ({user,type}:profileParams) => {
 
     try {
       setIsPending(true);
-      const addedFriend=await addFriend({userId:user._id,path:pathname})
-      if(addedFriend?.message)  return setIsFriend((prev)=> !prev);
+      const existUser=await addFriend({userId:user._id,path:pathname})
+      if(existUser) {
+        setCurrUser(existUser);
+        setIsFriend((prev)=> !prev);
+      }
 
     } catch (error) {
       console.log(error);
@@ -63,7 +66,7 @@ const ProfilePage = ({user,type}:profileParams) => {
     <div className=' w-full pr-1'>
         <div className=' flex flex-col gap-4 lg:gap-8 w-full'>
           <div className=' flex flex-col gap-4  '>
-            <div className=' flex gap-3 lg:gap-16'>
+            <div className=' flex gap-3 lg:gap-16 px-3'>
               <div className=''>
                 <div className=' mx-auto relative cursor-pointer h-48 w-48 max-md:h-36 max-md:w-36 shadow-md
                     rounded-full object-contain object-center overflow-hidden  p-1'>
@@ -94,12 +97,13 @@ const ProfilePage = ({user,type}:profileParams) => {
                  </div>
                  <div className=''>
                     {type==='user' && (
-                      <div className=' flex gap-8'>
+                      <div className={`flex ${isFriend ? 'gap-3':'gap-6'}`}>
                         <Button
                           className=' rounded-full px-6 text-white'
                           onClick={()=> {
                             handleMessage();
                           }}
+                          disabled={!isFriend}
                         >
                           message
                         </Button>
@@ -115,7 +119,7 @@ const ProfilePage = ({user,type}:profileParams) => {
                   </div>
               </div>
             </div>
-            <div className=' flex flex-col'>
+            <div className=' flex flex-col px-3'>
               <h2 className=' font-semibold text-2xl'>{user?.username}</h2>
               <p className=' text-md text-gray-600 text-ellipsis'>{user?.bio}</p>
             </div>

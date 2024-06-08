@@ -10,22 +10,24 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Loader from '@/components/shared/Loader';
 import Threads from '@/components/related/threads';
 import { useTheme } from 'next-themes';
+import { usePathname } from 'next/navigation';
 
 const Home = ({searchParams}:searchParamsProps) => {
 
   const [allPosts, setAllPosts] = useState<IPost[]>([]);
   const page=Number(searchParams?.page) || 1;
   const {theme,setTheme}=useTheme();
+  const pathname=usePathname();
 
   console.log('theme',theme);
 
   useEffect(()=> {
     const newFunc=async()=> {
-      const data=await getAllPosts({limit:5,page});
+      const data=await getAllPosts({limit:5,page,path:pathname});
       console.log('allPostssss',data);
       setAllPosts(data.allPosts);
        
-      if(theme==='light') {
+      if(theme==='light' || theme===undefined) {
         setTheme('dark');
       }
     }
@@ -60,7 +62,7 @@ const Home = ({searchParams}:searchParamsProps) => {
                 </div>
               </TabsContent>
               <TabsContent value="threads">
-                <div className=' flex flex-col gap-6 w-full py-4 justify-center'>
+                <div className=' flex flex-col gap-6 w-full py-4 justify-center overflow-hidden'>
                   {posts?.length>0 && posts.map((post)=> (
                     <div className=' flex flex-1 flex-col ml-9 mr-3 xl:ml-20 max-sm:ml-3 max-w-xl border border-light-2 rounded-xl' key={post._id}>
                       <Threads post={post} />

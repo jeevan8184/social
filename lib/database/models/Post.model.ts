@@ -30,7 +30,6 @@ export const PostSchema=new Schema({
     likes:[{
         type:Schema.Types.ObjectId,
         ref:'User',
-        unique:true,
     }],
     comments:[{
         type:Schema.Types.ObjectId,

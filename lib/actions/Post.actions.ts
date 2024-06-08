@@ -21,7 +21,7 @@ export const createPost=async({creator,text,images,tags,path='/'}:createPostPara
     }
 }
 
-export const getAllPosts=async({limit=5,page=1}:getAllPostsParams)=> {
+export const getAllPosts=async({limit=5,page=1,path}:getAllPostsParams)=> {
 
     try {
         await connectToDB();
@@ -40,6 +40,7 @@ export const getAllPosts=async({limit=5,page=1}:getAllPostsParams)=> {
         
         const allDocs=await Post.countDocuments();
 
+        revalidatePath(path);
         return JSON.parse(JSON.stringify({
             allPosts,
             totalPages:Math.ceil(allDocs/limit)
@@ -50,7 +51,7 @@ export const getAllPosts=async({limit=5,page=1}:getAllPostsParams)=> {
     }
 } 
 
-export const getAllUserPosts=async({userId,limit=5,page=1}:getAllUserPostsParams)=> {
+export const getAllUserPosts=async({userId,limit=5,page=1,path}:getAllUserPostsParams)=> {
 
     try {
         await connectToDB();
@@ -66,7 +67,8 @@ export const getAllUserPosts=async({userId,limit=5,page=1}:getAllUserPostsParams
                 select:'_id username photo'
             })
             .exec()
-        
+    
+        revalidatePath(path);
         const allDocs=await Post.countDocuments();
 
         return JSON.parse(JSON.stringify({
@@ -79,12 +81,14 @@ export const getAllUserPosts=async({userId,limit=5,page=1}:getAllUserPostsParams
     }
 }
 
-export const addLikeToPost=async({userId,postId}:addLikeToPostParams)=> {
+export const addLikeToPost=async({userId,postId,path}:addLikeToPostParams)=> {
+    console.log('like',userId,postId);
 
     try {
         await connectToDB();
         const existPost=await Post.findById(postId);
         if(!userId) throw new Error('userid is required');
+        if(!existPost) throw new Error('post is required');
         
         if(!existPost?.likes.includes(userId)) {
             existPost.likes.push(userId);
@@ -93,14 +97,15 @@ export const addLikeToPost=async({userId,postId}:addLikeToPostParams)=> {
             existPost.likes=existPost.likes.filter((id:string)=> id.toString() !==userId);
             await existPost.save();
         }
-
+        revalidatePath(path);
+        console.log('like',existPost);
         return JSON.parse(JSON.stringify(existPost));
     } catch (error) {
         console.log(error);
     }
 }
 
-export const getPostWithId=async(postId:string)=>{
+export const getPostWithId=async(postId:string,path:string)=>{
 
     try {
         await connectToDB();
@@ -127,6 +132,7 @@ export const getPostWithId=async(postId:string)=>{
                     }
                 ]
             })
+            revalidatePath(path);
 
         console.log('post',existPost.comments);
         return JSON.parse(JSON.stringify(existPost));

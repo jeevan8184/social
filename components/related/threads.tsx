@@ -33,7 +33,7 @@ const Threads = ({post,type,setDelPost,setSavedPosts}:threadProps) => {
     
 
   return (
-        <section className=' px-4 py-2 flex flex-col gap-1'>
+        <section className=' px-4 max-sm:px-0.5 py-2 flex flex-col gap-1 overflow-hidden'>
             <div className=' flex gap-2'>
                 <div className=' flex-between flex-col gap-0.5'>
                     <div className=''>
@@ -49,7 +49,7 @@ const Threads = ({post,type,setDelPost,setSavedPosts}:threadProps) => {
                     <div className=' h-full bg-grey-500 rounded-full w-0.5' />
                 </div>
                 <div className=' w-full'>
-                    <div className=' w-full flex-between'>
+                    <div className=' w-full flex-between max-sm:pr-4'>
                         <div className=' flex flex-col gap-0'>
                             <p className=' font-[550]'>{post?.creator?.username}</p>
                             <p className='text-sm text-[14px] text-gray-600'>{moment(post?.createdAt).fromNow()}</p>
@@ -59,7 +59,7 @@ const Threads = ({post,type,setDelPost,setSavedPosts}:threadProps) => {
                             <div className='ml-4 px-6'>
                                 <AlertDialog>
                                     <AlertDialogTrigger className=''>
-                                        <button className='  text-red-500 rounded-full flex gap-2 '>
+                                        <button className='  text-red-500 rounded-full'>
                                             <Trash2Icon className=' h-5 w-5 flex' />
                                         </button>
                                     </AlertDialogTrigger>
@@ -86,11 +86,13 @@ const Threads = ({post,type,setDelPost,setSavedPosts}:threadProps) => {
                           )} 
                         </div>
                     </div>
-                    <p className=''>{post?.text}</p>
+                    <div className=''>
+                        <p className=' max-sm:-ml-3 mt-2 text-[15px] w-full text-wrap whitespace-normal threadText '>{post?.text}</p>
+                    </div>
                     {post?.tags?.map((tag,i)=> (
                         <p className=' text-blue-600 text-sm' key={i}>#{tag} </p>
                     ))}
-                    <div className=' -ml-8'>
+                    <div className=' -ml-8  max-sm:-ml-12'>
                         <PostOptions post={post} setSavedPosts={setSavedPosts} /> 
                     </div>
                 </div>

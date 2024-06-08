@@ -89,7 +89,7 @@ body {
     @apply w-full bg-gray-100 py-4 pb-8
   }
   .profile{
-    @apply px-3 py-6
+    @apply px-3 max-sm:px-0 py-6
   }
   .type{
     @apply border border-gray-600 w-96  bg-white px-5 rounded-full flex-center focus-visible:ring-0 focus-visible:ring-offset-0
@@ -139,6 +139,15 @@ body {
   .tab1 {
     @apply text-[18px] px-4 py-2 bg-transparent  active:border-blue-500
   }
+  .threadText{
+    @apply font-serif
+  }
 
+  @media screen and (min-width: 0px) and (max-width: 412px) {
+    .threadText {
+      @apply font-serif;
+    }
+  }
+  
 }
 

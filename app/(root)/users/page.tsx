@@ -10,7 +10,7 @@ import Image from 'next/image';
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { Suspense, useContext, useState } from 'react'
 
-const ShowUsersPageSuspense = () => {
+const ShowUsersPage = () => {
     
     const {currUser,setpostAndUsers,isPending}=useContext(ChatContext);
     const [selectedUsers, setSelectedUsers] = useState<IUser[]>([]);
@@ -76,9 +76,9 @@ const ShowUsersPageSuspense = () => {
 }
 
 
-const ShowUsersPage=()=>{
+const ShowUsersPageSuspense=()=>{
     <Suspense fallback={<Loader />}>
-        <ShowUsersPageSuspense />
+        <ShowUsersPage />
     </Suspense>
 }
 

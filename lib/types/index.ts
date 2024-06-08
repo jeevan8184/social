@@ -16,6 +16,7 @@ export type CreateUserParams={
     username:string,
     bio:string,
     photo:string,
+    path:string
 }
 
 export type fetchUserProps={
@@ -112,17 +113,20 @@ export type createPostParams={
 export type getAllUserPostsParams={
     userId:string,
     limit?:number,
-    page?:number | string
+    page?:number | string,
+    path:string
 }
 
 export type getAllPostsParams={
     limit?:number,
-    page?:number | string
+    page?:number | string,
+    path:string;
 }
 
 export type addLikeToPostParams={
     userId:string,
-    postId:string
+    postId:string,
+    path:string
 }
 
 export type createCommentParams={

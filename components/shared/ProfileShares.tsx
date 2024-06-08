@@ -29,7 +29,7 @@ const ProfileShares = ({user}:ProfileSharesProps) => {
   
     useEffect(()=> {
       const newFunc=async()=> {
-        const data=await getAllUserPosts({limit:5,page:1,userId:user._id});
+        const data=await getAllUserPosts({limit:5,page:1,userId:user._id,path:pathname});
         setAllPosts(data.allPosts);
 
         const newData=await getUserSavedPosts(user._id,pathname);

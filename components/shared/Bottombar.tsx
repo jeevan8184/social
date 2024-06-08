@@ -20,7 +20,7 @@ const Bottombar = () => {
   if(!mount) return null;
 
   return (
-    <div className={` border-t-0  bg-[#F5F5F5] w-full dark:bg-gray-800  sm:hidden flex fixed bottom-0 px-2 pt-1 z-50 ${hideBottom ?'hidden' : ''}`}>
+    <div className={` border-t-0  bg-[#F5F5F5] w-full dark:bg-gray-800  sm:hidden flex fixed bottom-0 px-2 max-sm:px-1 pt-1 z-50 ${hideBottom ?'hidden' : ''}`}>
       <div className=' flex flex-row gap-2 w-full flex-between'>
           {sidebarLinks.map((link,i)=> {
             const isActive=pathname===link.route

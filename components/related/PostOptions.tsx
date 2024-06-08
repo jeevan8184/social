@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/drawer"
 import { Button } from '../ui/button';
 import { IUser } from '@/lib/database/models/User.model';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
   
 
@@ -34,20 +34,27 @@ const PostOptions = ({post,setSavedPosts}:PostOptionsParams) => {
     const [isMarked, setIsMarked] = useState(false);
     const router=useRouter();
     const {theme}=useTheme();
+    const pathname=usePathname();
 
-    useEffect(()=> {
+    const handleCheck=()=>{
         if(post && currUser) {
             const isLiked=post?.likes.some((l)=> l===currUser?._id);
             setLiked(isLiked);
             setIsMarked(currUser?.saved?.includes(post._id));
         }
+    }
+
+    useEffect(()=> {
+        handleCheck();
     },[post,currUser]);
 
     const handleLike=async()=> {
         try {
-            const newPost= await addLikeToPost({userId:currUser?._id,postId:post._id});
-            setLikes(newPost?.likes);
-            setLiked((prev)=> !prev)
+            const newPost= await addLikeToPost({userId:currUser?._id,postId:post._id,path:pathname});
+            if(newPost) {
+                setLikes(newPost?.likes);
+                setLiked((prev)=> !prev);
+            }
         } catch (error) {
             console.log(error);
         }
@@ -56,9 +63,10 @@ const PostOptions = ({post,setSavedPosts}:PostOptionsParams) => {
     const handleSave=async()=>{
 
         try {
-            const user=await savePostToUser(post._id,currUser._id);
+            const user=await savePostToUser(post._id,currUser._id,pathname);
             if(user) {
                 setCurrUser(user);
+                handleCheck();
                 setIsMarked((prev)=> !prev);
 
                 if(user?.saved.includes(post._id)) {

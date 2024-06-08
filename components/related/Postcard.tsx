@@ -78,7 +78,10 @@ const Postcard = ({post,type,setDelPost,setSavedPosts}:PostcardProps) => {
                         )}
                     </div>
                 </div>
-                <p className={` pl-8 text-[15px] text-wrap truncate text-clip w-fit max-w-md ${type==='thread' && ' max-w-xl'}`}>
+                <p 
+                    className={` pl-8 text-[15px] text-wrap truncate text-clip 
+                        w-fit max-w-md ${type==='thread' && ' max-w-xl'}`}
+                >
                     {post.text}
                 </p>
                 <div className='  pl-8 flex gap-0 flex-col text-wrap text-clip w-fit'>

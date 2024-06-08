@@ -20,9 +20,9 @@ const OnBoard = () => {
   }, []);
   
   return (
-    <section className=' wrapper  flex flex-col gap-4'>
-      <div className=' flex flex-col gap-2'>
-        <h2 className=' text-2xl font-semibold'>Create Your profile</h2>
+    <section className=' wrapper  flex flex-col gap-2'>
+      <div className=' flex flex-col'>
+        <h2 className=' text-2xl font-semibold px-4 py-2'>Create Your profile</h2>
       </div>
       <div className='userForm'>
           <UserForm />
