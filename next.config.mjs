@@ -1,23 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    eslint:{
-        ignoreDuringBuilds:true
+    eslint: {
+        ignoreDuringBuilds: true
     },
-    typescript:{
-        ignoreBuildErrors:true
+    typescript: {
+        ignoreBuildErrors: true
     },
-    experimental:{
-        esmExternals:'loose',
-        serverComponentsExternalPackages:["mongoose"]
+    experimental: {
+        esmExternals: 'loose',
+        serverComponentsExternalPackages: ["mongoose"]
     },
     images: {
         domains: ['utfs.io'],
         remotePatterns: [
-          {
-            protocol: 'https',
-            hostname: 'utfs.io',
-            port: ''
-          }
+            {
+                protocol: 'https',
+                hostname: 'utfs.io',
+                port: ''
+            }
         ]
     }
 };

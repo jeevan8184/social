@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils'
 import Loader from './Loader'
 
-const SearchPage = () => {
+const SearchPageSuspense = () => {
     const [text, setText] = useState('');
     const searchParams=useSearchParams();
     const router=useRouter();
@@ -57,10 +57,12 @@ const SearchPage = () => {
 }
 
 
-const SearchPageSuspense=()=>{
-    <Suspense fallback={<Loader />}>
-        <SearchPage />
-    </Suspense>
+const SearchPage=()=>{
+    return (
+        <Suspense fallback={<Loader />}>
+            <SearchPageSuspense />
+        </Suspense>
+    )
 }
 
 export default SearchPage;

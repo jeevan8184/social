@@ -173,11 +173,13 @@ const CommentSection = () => {
 }
 
 const CommentSectionSuspense=()=>{
-    <Suspense fallback={<Loader />}>
-        <CommentSection />
-    </Suspense>
+    return (
+        <Suspense fallback={<Loader />}>
+            <CommentSection />
+        </Suspense>
+    )
 }
 
-export default CommentSection;
+export default CommentSectionSuspense;
 
 
