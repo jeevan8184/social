@@ -13,9 +13,12 @@ import { ClientUploadedFileData } from 'uploadthing/types';
 
 export const ChatContext=createContext<any>(null);
 const url=process.env.NEXT_PUBLIC_SOCKET
-const socket=io(`${url}`);
-
-console.log('url',url);
+const socket=io(url || "http://localhost:5000", {
+    withCredentials: true,
+    extraHeaders: {
+        "my-custom-header": "abcd"
+    }
+});
 
 interface chatProviderProps {
     children:ReactNode
@@ -50,7 +53,7 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
  
     useEffect(()=> {
         if(currUser) {
-            
+
             socket.emit('newUser',currUser?._id);
             socket.on('onlineUsers',(onlineUsers)=> {
                 setOnlineUsers(onlineUsers);

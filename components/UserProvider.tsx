@@ -13,9 +13,23 @@ export const UserProvider = ({children}:{children:ReactNode}) => {
     const {currUser}=useContext(ChatContext);
     const [allChats, setAllChats] = useState<IChat[]>([]);
     const [chatDeleted, setChatDeleted] = useState<boolean>(false);
+    const [isBoard, setIsBoard] = useState(false);
 
     const pathname=usePathname();
     const isMessage=pathname.includes('message');
+
+    useEffect(()=> {
+      if(pathname.includes('onBoard')) {
+        setIsBoard(true);
+      }
+    },[pathname]);
+
+    useEffect(()=> {
+      if(isBoard && pathname==='/' ) {
+        window.location.reload();
+        setIsBoard(false);
+      }
+    },[isBoard,pathname]);
 
     useEffect(()=> {
       const newFunc=async()=> {

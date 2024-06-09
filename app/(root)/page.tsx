@@ -28,7 +28,7 @@ const Home = ({searchParams}:searchParamsProps) => {
       setAllPosts(data.allPosts);
        
       if(theme===undefined) {
-        setTheme('dark');
+        setTheme('light');
       }
     }
     newFunc();
