@@ -33,7 +33,6 @@ const CommentSchema=new Schema({
     likes:[{
         type:Schema.Types.ObjectId,
         ref:'User',
-        unique:true,
     }],
 })
 
