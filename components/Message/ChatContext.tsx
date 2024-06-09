@@ -13,7 +13,9 @@ import { ClientUploadedFileData } from 'uploadthing/types';
 
 export const ChatContext=createContext<any>(null);
 const url=process.env.NEXT_PUBLIC_SOCKET
-const socket=io("https://social-server-xi.vercel.app/");
+const socket=io(`${url}`);
+
+console.log('url',url);
 
 interface chatProviderProps {
     children:ReactNode
