@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import { Button } from '../ui/button';
 import { useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import ModeSettings from './Mode';
 import { ChatContext } from '../Message/ChatContext';
 import Loader from './Loader';
@@ -11,11 +11,13 @@ import Loader from './Loader';
 
 const Navbar = () => {
   const router=useRouter();
+  const pathname=usePathname();
 
+  const hideNav=pathname.includes('/message/');
   const {currUser}=useContext(ChatContext);
 
   return (
-    <section className=' navbar px-6'>
+    <section className={`navbar px-6 ${hideNav ? ' max-sm:hidden':''}`}>
       <div className=' flex flex-row justify-between items-center z-0'>
         <div className=' flex gap-3  pl-5 max-sm:pl-0 items-center'>
             <Image

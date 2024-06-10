@@ -39,8 +39,8 @@ const InputMsg = () => {
   return (
         <div className=' flex-center w-full mx-1'>
           <div className=' max-md:gap-1 fixed bottom-1 max-sm:bottom-0 mb-1 max-sm:w-full overflow-hidden'>
-            <div className=' w-full flex items-center gap-3 max-sm:gap-0.5'>
-              <div className=' flex type dark:bg-dark-4 overflow-hidden'>
+            <div className=' w-full flex items-center gap-3 max-sm:gap-0.5 max-sm:px-1'>
+              <div className=' flex type dark:bg-dark-4 overflow-hidden area -ml-1 mr-1'>
                 <div className=' cursor-pointer'> 
                   <div {...getRootProps()}>
                       <input {...getInputProps()} />
@@ -50,7 +50,6 @@ const InputMsg = () => {
                 <Input
                   placeholder='message..'
                   value={text}
-                  autoFocus
                   onKeyDown={(e)=> e.key==='Enter' && handleSendMsg()}
                   onChange={(e)=> {
                     setText(e.target.value);
@@ -82,9 +81,9 @@ const InputMsg = () => {
                   )}
                 </div>
               </div>
-              <div className=''>
+              <div className=' z-50 mr-1 '>
                 <button
-                  className=' bg-blue-600/10 text-blue-500 px-4 py-2 rounded-2xl flex gap-0'
+                  className=' bg-blue-600/10 text-blue-500 px-4 py-2 rounded-2xl flex gap-0 active:text-blue-600 active:bg-blue-600/20'
                   onClick={handleSendMsg}
                   >
                     <SendHorizonal className=' h-5 w-5 font-normal' />

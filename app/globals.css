@@ -148,6 +148,12 @@ body {
       @apply font-serif;
     }
   }
+
+  @media screen and (min-width: 0px) and (max-width: 390px) {
+    .area {
+      @apply w-[300px] px-0
+    }
+  }
   
 }
 

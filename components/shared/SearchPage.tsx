@@ -45,7 +45,6 @@ const SearchPageSuspense = () => {
             className=''
         />
         <Input
-            autoFocus
             placeholder='Search username'
             value={text}
             onChange={(e)=> setText(e.target.value)}

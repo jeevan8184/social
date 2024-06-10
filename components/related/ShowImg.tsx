@@ -23,7 +23,8 @@ const ShowImg = ({open,handleImage,img}:ShowImgProps) => {
                     className=' object-contain'
                 />
                 <p 
-                    className=' p-1 bg-gray-200 rounded-full absolute top-0 right-1/4 slide-out-to-left-1/4 cursor-pointer group-hover:flex'
+                    className=' p-1 bg-gray-200 rounded-full absolute top-0 right-1/4 
+                        slide-out-to-left-1/4 cursor-pointer group-hover:flex dark:bg-gray-700 dark:text-white'
                     onClick={handleImage}
                 >
                     <X />
