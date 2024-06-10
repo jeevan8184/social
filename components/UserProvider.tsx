@@ -2,7 +2,7 @@
 
 import { getUserChats } from '@/lib/actions/Chat.actions';
 import { IChat } from '@/lib/database/models/Chat.model';
-import React, { ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
+import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { ChatContext } from './Message/ChatContext';
 import { usePathname } from 'next/navigation';
 

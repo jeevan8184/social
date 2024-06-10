@@ -12,13 +12,6 @@ import io from 'socket.io-client';
 import { ClientUploadedFileData } from 'uploadthing/types';
 
 export const ChatContext=createContext<any>(null);
-const url=process.env.NEXT_PUBLIC_SOCKET
-const socket=io(url || "http://localhost:5000", {
-    withCredentials: true,
-    extraHeaders: {
-        "my-custom-header": "abcd"
-    }
-});
 
 interface chatProviderProps {
     children:ReactNode
@@ -39,9 +32,30 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
     const [reactions, setReactions] = useState({msgId:null,emoji:null});
     const [postAndUsers, setpostAndUsers] = useState<{post:string | null,users:Array<string> | null}>({post:null,users:null});
     const [isPending, setIsPending] = useState(false);
+    const [socket, setSocket] = useState<any>(null);
+
 
     const pathname=usePathname();
     const {startUpload}=useUploadThing("imageUploader");
+
+
+    useEffect(() => {
+        const url = process.env.NEXT_PUBLIC_SOCKET || "http://localhost:5000";
+        const newSocket = io(url, {
+          withCredentials: true,
+          extraHeaders: {
+            "my-custom-header": "abcd"
+          }
+        });
+    
+        setSocket(newSocket);
+    
+        return () => {
+          newSocket.close();
+        };
+      }, []);
+
+      console.log('socket',socket);
 
     useEffect(()=> {
         const newFunc=async()=> {
@@ -52,17 +66,17 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
     },[]);
  
     useEffect(()=> {
-        if(currUser) {
+        if(currUser && socket) {
 
-            socket.emit('newUser',currUser?._id);
-            socket.on('onlineUsers',(onlineUsers)=> {
+            socket?.emit('newUser',currUser?._id);
+            socket?.on('onlineUsers',(onlineUsers:IOnlineUsers[])=> {
                 setOnlineUsers(onlineUsers);
             })
-        }
-            
-        return ()=> {
-            socket.off('newUser');
-            socket.off('onlineUsers');
+
+            return ()=> {
+                socket?.off('newUser');
+                socket?.off('onlineUsers');
+            }
         }
 
     },[currUser,socket])
@@ -88,7 +102,7 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
                         path:pathname,
                         image:imageurl
                     });
-                    socket.emit('newMsg',{
+                    socket?.emit('newMsg',{
                         newMsg:message,
                         senderId:currUser?._id,
                         receiverId:newUser?._id,
@@ -118,7 +132,7 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
                                 path:pathname,
                                 post:postAndUsers.post
                             });
-                            socket.emit('newMsg',{
+                            socket?.emit('newMsg',{
                                 newMsg:message,
                                 senderId:currUser?._id,
                                 receiverId:receiverId,
@@ -135,21 +149,21 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
             }
         }
         newFunc();
-    },[postAndUsers]);
+    },[postAndUsers,socket]);
 
     useEffect(()=> {
         const newFunc=async()=> {
             if(isDelete) {
                 await deleteMessages(deleteMultiple);
                 
-                socket.emit('deleteMultiple',({msgs:deleteMultiple,senderId:currUser?._id,receiverId:newUser?._id}));
+                socket?.emit('deleteMultiple',({msgs:deleteMultiple,senderId:currUser?._id,receiverId:newUser?._id}));
                 setDeleteMultiple([]);
                 setIsDelete(false);
             }
         }
         newFunc(); 
 
-    },[isDelete]);
+    },[isDelete,socket]);
 
     useEffect(()=> {
         const newFunc=async()=> {
@@ -159,70 +173,70 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
                 
                 if(isRxn) {
                     const rxnMsg=await deleteReactionsMsg({userId:currUser?._id!,emoji:reactions?.emoji!,id:reactions.msgId});
-                    socket.emit('setEmoji',{msg:rxnMsg,senderId:currUser?._id,receiverId:newUser?._id});
+                    socket?.emit('setEmoji',{msg:rxnMsg,senderId:currUser?._id,receiverId:newUser?._id});
                 }else {
                     const rxnMsg=await addReactionsMsg({userId:currUser?._id!,emoji:reactions?.emoji!,id:reactions.msgId});
-                    socket.emit('setEmoji',{msg:rxnMsg,senderId:currUser?._id,receiverId:newUser?._id});
+                    socket?.emit('setEmoji',{msg:rxnMsg,senderId:currUser?._id,receiverId:newUser?._id});
                 }
                 setReactions({msgId:null,emoji:null});
             }
         }
         newFunc();
-    },[reactions])
+    },[reactions,socket])
 
     useEffect(()=> {
         if(isTyping) {
-            socket.emit('startTyping',({senderId:currUser?._id,receiverId:newUser?._id}));
+            socket?.emit('startTyping',({senderId:currUser?._id,receiverId:newUser?._id}));
         }else {
-            socket.emit('stopTyping',({senderId:currUser?._id,receiverId:newUser?._id}));
+            socket?.emit('stopTyping',({senderId:currUser?._id,receiverId:newUser?._id}));
         }
-    },[isTyping]);
+    },[isTyping,socket]);
 
     useEffect(()=> {
         const newFunc=async()=> {
             if(deleteId) {
                 await deleteMessage(deleteId);
 
-                socket.emit('deleteMsg',({ deleteId,senderId:currUser?._id,receiverId:newUser?._id}));
+                socket?.emit('deleteMsg',({ deleteId,senderId:currUser?._id,receiverId:newUser?._id}));
                 setDeleteId(null); 
             }
         }
         newFunc();
-    },[deleteId]);
+    },[deleteId,socket]);
 
     useEffect(()=> {
 
-        socket.on('receiveMsg',(msg)=> {
+        socket?.on('receiveMsg',(msg:any)=> {
             setMessages((prev)=> [...prev,msg]);
         })
-        socket.on('onlineUsers',(onlineUsers)=> {
+        socket?.on('onlineUsers',(onlineUsers:IOnlineUsers[])=> {
             setOnlineUsers(onlineUsers);
         })
-        socket.on('notify',(n)=> {
+        socket?.on('notify',(n:any)=> {
             setNotifications((prev)=> [...prev,n]);
         })
-        socket.on('delmsgs',(msgs)=> {
+        socket?.on('delmsgs',(msgs:any)=> {
             setMessages((prev)=> {
                 const newMsgs=prev.filter((p)=> !msgs.some((m:IMessage)=> m._id===p._id));
                 return newMsgs;
             })
         })
-        socket.on('emoji',(msg)=> {
+        socket?.on('emoji',(msg:IMessage)=> {
             setMessages((prev)=> {
                 const newMsgs=prev.map((p)=> p._id===msg._id ? {...msg} :p);
                 return newMsgs;
             })
         })
-        socket.on('delete',(id)=> {
+        socket?.on('delete',(id:string)=> {
             setMessages((prev)=> prev.filter((p)=> p._id !==id));
         })
 
         return ()=> {
-            socket.off('receiveMsg');
-            socket.off('onlineUsers');
-            socket.off('delmsgs');
-            socket.off('delete');
-            socket.off('notify');
+            socket?.off('receiveMsg');
+            socket?.off('onlineUsers');
+            socket?.off('delmsgs');
+            socket?.off('delete');
+            socket?.off('notify');
         }
     },[socket]);
 
