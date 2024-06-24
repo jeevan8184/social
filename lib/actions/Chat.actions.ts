@@ -2,13 +2,14 @@
 import mongoose from "mongoose";
 import { connectToDB } from "../database";
 import Chat, { IChat } from "../database/models/Chat.model";
-import { createChatParams, getChatWithIdParams } from "../types";
+import { createChatParams, getChatWithIdParams, getUserSearchChatsParams } from "../types";
 import Message, { IMessage } from "../database/models/Message.model";
-import User from "../database/models/User.model";
+import User, { IUser } from "../database/models/User.model";
 import { revalidatePath } from "next/cache";
 import Post from "../database/models/Post.model";
+import { cache } from "react";
 
-export const createChat=async({senderId,receiverId}:createChatParams)=> {
+export const createChat=cache(async({senderId,receiverId}:createChatParams)=> {
 
     try {
         await connectToDB();
@@ -23,7 +24,7 @@ export const createChat=async({senderId,receiverId}:createChatParams)=> {
     } catch (error) {
         console.log(error);
     }
-}
+})
 
 export const getChatWithId=async({chatId,sender}:getChatWithIdParams)=> {
 
@@ -35,7 +36,6 @@ export const getChatWithId=async({chatId,sender}:getChatWithIdParams)=> {
                 model:User,
                 select:'_id username photo bio'
             })
-        console.log('message page',existChat);
         return JSON.parse(JSON.stringify(existChat));
     } catch (error) {
         console.log(error);
@@ -76,8 +76,8 @@ export const getUserChats=async(id:string,path:string)=> {
 
         const userObj=new mongoose.Types.ObjectId(id);
         const allChats=await Chat.find({participants:{$in:[userObj]}})
-            .sort('desc')
-            .populate({
+        .sort({_id:'desc'})
+        .populate({
                 path:'participants',
                 model:User,
                 select:'_id username photo bio'
@@ -90,7 +90,37 @@ export const getUserChats=async(id:string,path:string)=> {
     }
 }
 
-export const getChatLastMessage=async(chatId:string)=> {
+export const getUserSearchChats=async({userId,searchTerm,path}:getUserSearchChatsParams)=>{
+    try {
+        await connectToDB();
+        const regex=new RegExp(searchTerm,"i");
+        const conditions={
+            $and:[
+                {username:{$regex:regex}},
+                {_id:{$ne:userId}}
+            ]
+        }
+        const AllUsers=await User.find(conditions);
+
+        const allChats=AllUsers.map(async(user:IUser)=> {
+            const newChat=await Chat.findOne({participants:{$all:[userId,user?._id]}})
+            .sort({_id:'desc'})
+            .populate({
+                    path:'participants',
+                    model:User,
+                    select:'_id username photo bio'
+            })
+            return newChat;
+        })
+        const newAllChats=await Promise.all(allChats);
+        revalidatePath(path);
+        return JSON.parse(JSON.stringify(newAllChats));
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getChatLastMessage=async(chatId:string,path:string)=> {
 
     try {
         await connectToDB();
@@ -99,12 +129,12 @@ export const getChatLastMessage=async(chatId:string)=> {
                 path:'messages',
                 model:Message,
             })
-
         if(chat.messages.length==0) return null;
-        const lastMsg=chat.messages.sort((a:IMessage,b:IMessage)=>  new Date(b.createdAt).getTime()-new Date(a.createdAt).getTime())[0];
 
-        return JSON.parse(JSON.stringify(lastMsg));
+        const recentMsg=chat.messages.sort((a:IMessage,b:IMessage)=> Number(b.createdAt)-Number(a.createdAt))[0];
 
+        revalidatePath(path);
+        return JSON.parse(JSON.stringify(recentMsg));
     } catch (error) {
         console.log(error);
     }

@@ -1,10 +1,11 @@
 
 import Bottombar from '@/components/shared/Bottombar'
-import Footer from '@/components/shared/Footer'
 import Navbar from '@/components/shared/Navbar'
 import Sidebar from '@/components/shared/Sidebar'
 import { Metadata } from 'next'
 import React from 'react'
+import { Toaster } from "@/components/ui/toaster"
+
 
 export const metadata:Metadata={
     title:"Socila media platform",
@@ -19,6 +20,7 @@ const RootLayout = ({children}:{children:React.ReactNode}) => {
   return (
     <html lang='en'>
         <body>
+        <Toaster />
            <div className=' wrapper flex flex-col'>
             <Navbar />
                 <div className=' flex  flex-grow'>

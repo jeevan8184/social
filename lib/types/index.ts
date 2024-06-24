@@ -16,7 +16,8 @@ export type CreateUserParams={
     username:string,
     bio:string,
     photo:string,
-    path:string
+    path:string,
+    id?:string
 }
 
 export type fetchUserProps={
@@ -165,4 +166,10 @@ export type deleteChildCmtParams={
     id:string,
     path:string,
     cmtId:string
+}
+
+export type getUserSearchChatsParams={
+    userId:string,
+    searchTerm:string,
+    path:string
 }

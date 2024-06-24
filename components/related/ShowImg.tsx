@@ -15,7 +15,7 @@ const ShowImg = ({open,handleImage,img}:ShowImgProps) => {
   return (
     <div className=' bg-black bg-opacity-75 flex-center inset-0 fixed z-50 flex-1'>
         <div className=' w-fit bg-white'>
-            <div className=' relative h-[500px] max-sm:h-[400px] max-sm:w-[300px] w-[450px] group'>
+            <div className=' relative h-[500px] max-sm:h-[400px] max-sm:w-[300px] w-[450px] group aspect-square'>
                 <Image
                     src={img}
                     alt='image'

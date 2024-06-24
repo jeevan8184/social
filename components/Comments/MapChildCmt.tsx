@@ -18,7 +18,7 @@ const MapChildCmt = ({cmt,setChildCmts,comment}:MapChildCmtProps) => {
     
   return (
 
-    <div className=''>
+    <div className=' w-full max-w-xs'>
         <div className=' flex gap-1'>
             <div className=' flex-between flex-col gap-0.5'>
                 <div className=''>

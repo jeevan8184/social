@@ -7,7 +7,10 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { formUrlQuery, removeKeysFromQuery } from '@/lib/utils'
 import Loader from './Loader'
 
-const SearchPageSuspense = () => {
+interface SearchPageProps {
+    placeholder?:string
+}
+const SearchPageSuspense = ({placeholder}:SearchPageProps) => {
     const [text, setText] = useState('');
     const searchParams=useSearchParams();
     const router=useRouter();
@@ -29,7 +32,7 @@ const SearchPageSuspense = () => {
                 })
             }
             router.push(newUrl,{scroll:false});
-        },200)
+        },100)
 
         return ()=> clearTimeout(debounceFn);
 
@@ -45,10 +48,10 @@ const SearchPageSuspense = () => {
             className=''
         />
         <Input
-            placeholder='Search username'
+            placeholder={placeholder ? placeholder : 'Search username'}
             value={text}
             onChange={(e)=> setText(e.target.value)}
-            className=' focus-visible:ring-0 rounded-full 
+            className=' focus-visible:ring-0 rounded-full dark:placeholder:text-slate-200
                 focus-visible:ring-offset-0 border-none bg-gray-50 dark:bg-black'
         />
     </div>

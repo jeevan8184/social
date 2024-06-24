@@ -10,7 +10,7 @@ export const createPost=async({creator,text,images,tags,path='/'}:createPostPara
 
     try {
         await connectToDB();
-        const newPost=await Post.create({creator,text,images,tags});
+        const newPost=await Post.create({creator,text,images,tags,createdAt:Date.now()});
         
         await User.updateOne({_id:creator},{$push:{posts:newPost._id}});
 

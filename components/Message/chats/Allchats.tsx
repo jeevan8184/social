@@ -55,8 +55,8 @@ const Allchats = ({allChats}:AllChatsProps) => {
 
   return (
     <div className=' flex flex-col gap-3 my-2 relative'>
-        <div className=' flex-between'>
-            <p className=' text-2xl font-semibold'>Users</p>
+        <div className=' flex-between px-2 pb-1'>
+            <p className=' text-2xl font-semibold'>Chats</p>
             <div className='relative flex gap-4 h-full items-center'>
                 {isDelete && (
                 <div className=' flex gap-4'>

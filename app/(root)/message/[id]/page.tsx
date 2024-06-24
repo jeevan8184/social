@@ -5,11 +5,12 @@ import ChatMessage from '@/components/Message/ChatMessage'
 import { getChatMessages, getChatWithId } from '@/lib/actions/Chat.actions';
 import { getUser } from '@/lib/actions/User.actions';
 import { IUser } from '@/lib/database/models/User.model';
+import { INotify } from '@/lib/types';
 import React, { useContext, useEffect } from 'react'
 
 const MessageUser = ({params:{id}}:{params:{id:string}}) => {
   
-  const {setMessages,setNewUser,setNewChat}=useContext(ChatContext);
+  const {setMessages,setNewUser,setNewChat,newChat,currUser,setNotifications}=useContext(ChatContext);
 
   useEffect(() => {
       const getAuthData = async () => {
@@ -27,6 +28,16 @@ const MessageUser = ({params:{id}}:{params:{id:string}}) => {
       };
       getAuthData();
   }, [id]);
+
+  useEffect(()=> {
+    if(newChat) {
+      const user=newChat?.participants?.find((p:IUser)=> p._id !==currUser?._id);
+      setNotifications((notifications:INotify[])=> {
+        const newNotifies=notifications.filter((notify:INotify)=> notify.senderId !== user._id);
+        return newNotifies;
+      });
+    }
+  },[newChat]);
 
   return (
     <div className=' z-0 flex flex-1 flex-col '>

@@ -1,7 +1,6 @@
 import MapUsers from '@/components/shared/MapUsers';
 import SearchPage from '@/components/shared/SearchPage'
 import { fetchUsers } from '@/lib/actions/User.actions'
-import { IUser } from '@/lib/database/models/User.model'
 import { searchParamsProps } from '@/lib/types'
 
 export default async function Search({searchParams}:searchParamsProps) {
@@ -10,12 +9,11 @@ export default async function Search({searchParams}:searchParamsProps) {
   const searchText=(searchParams?.query as string) || '';
 
   const allUsers=await fetchUsers({
-    limit:4,
+    limit:100,
     query:searchText,
     page:page,
     path:'/',
   })
-
 
   return (
     <div className=' flex flex-col gap-2'>

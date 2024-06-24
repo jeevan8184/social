@@ -15,7 +15,7 @@ export const createMessage=async({text,senderId,receiverId,path,image}:createMes
         await connectToDB();
         const condition={participants:{$all:[senderId,receiverId]}}
 
-        const newMsg=await Message.create({text,sender:senderId,receiver:receiverId,image});
+        const newMsg=await Message.create({text,sender:senderId,receiver:receiverId,image,createdAt:Date.now()});
         await Chat.updateOne(condition,{$push:{messages:newMsg._id}});
 
         revalidatePath(path);
@@ -32,7 +32,7 @@ export const createMessagePost=async({text,senderId,receiverId,path,image,post}:
         await connectToDB();
         const condition={participants:{$all:[senderId,receiverId]}}
 
-        const newMsg=await Message.create({text,sender:senderId,receiver:receiverId,image,post});
+        const newMsg=await Message.create({text,sender:senderId,receiver:receiverId,image,post,createdAt:Date.now()});
         await Chat.updateOne(condition,{$push:{messages:newMsg._id}});
 
         const message=await Message.findById(newMsg._id)

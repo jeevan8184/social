@@ -162,7 +162,7 @@ const CommentSection = () => {
                     </div>
                 </div>
                 <div className=' flex flex-1 flex-col gap-4'>
-                    <h1 className=' font-semibold p-4 max-md:px-1'>Comments to Your post</h1>
+                    <h1 className=' font-semibold p-4 max-md:px-2'>Comments to Your post</h1>
                     <CommentsPage comments={comments} setComments={setComments} post={post} />
                 
                 </div>

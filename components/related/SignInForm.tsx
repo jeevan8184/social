@@ -20,12 +20,16 @@ import { SignInValues } from '@/consants'
 import { useRouter } from 'next/navigation'
 import { SignIn } from '@/lib/actions/Auth.actions'
 import Image from 'next/image'
+import { useToast } from '../ui/use-toast'
+import { getUser } from '@/lib/actions/User.actions'
 
 const SignInForm = () => {
 
     const router=useRouter();
     const [newError, setNewError] = useState('');
     const [IsShowPass, setIsShowPass] = useState(false);
+
+    const {toast}=useToast();
 
     const form = useForm<z.infer<typeof SignInSchema>>({
         resolver: zodResolver(SignInSchema),
@@ -41,8 +45,12 @@ const SignInForm = () => {
             if(AuthData.error) {
                 return setNewError(AuthData.error);
             }
-
-            router.push('/onBoard');
+            const user=await getUser();
+            if(user) {
+                router.push('/');
+            }else{
+                router.push('/onBoard');
+            }
         } catch (error) {
             console.log(error);
             setNewError('some error occured');

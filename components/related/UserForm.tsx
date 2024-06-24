@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserSchema } from '@/lib/validations'
-import { UserInitValues } from '@/consants'
 import { Input } from '../ui/input'
 import { Button } from '../ui/button'
 import Fileuploader from './Fileuploader'
@@ -17,9 +16,15 @@ import { createUser } from '@/lib/actions/User.actions'
 import { usePathname, useRouter } from 'next/navigation'
 
 interface UseFormprops {
-    authId:string | undefined
+    UserInitValues:{
+        username: string;
+        bio: string;
+        photo: string;
+    },
+    id?:string
 }
-const UserForm = () => {
+
+const UserForm = ({UserInitValues,id}:UseFormprops) => {
 
     const [Files, setFiles] = useState<File[]>([]);
     const {startUpload}=useUploadThing('imageUploader');
@@ -32,26 +37,40 @@ const UserForm = () => {
     })
 
     async function onSubmit(values:z.infer<typeof UserSchema>) {
-        console.log(values);
+        console.log(values,Files,id);
         let uploadImage=values.photo;
 
         try {
-            const newImage=await startUpload(Files);
-            if(!newImage) return;
+            if(id && Files.length==0) {
+                console.log('values',values);
+
+                console.log('uploaded',uploadImage,values.photo);
+                const newUser=await createUser({
+                    username:values.username,
+                    bio:values.bio,
+                    photo:uploadImage,
+                    path:pathname,
+                    id
+                })
+                if(newUser) router.push('/');
+
+            }else{
+                const newImage=await startUpload(Files);
+                if(!newImage) return;
+                
+                uploadImage=newImage[0]?.url;
+
+                console.log('uploaded',uploadImage);
+                const newUser=await createUser({
+                    username:values.username,
+                    bio:values.bio,
+                    photo:uploadImage,
+                    path:pathname,
+                    id
+                })
+                if(newUser) router.push('/');
+            }
             
-            uploadImage=newImage[0]?.url;
-
-            const newUser=await createUser({
-                username:values.username,
-                bio:values.bio,
-                photo:uploadImage,
-                path:pathname
-            })
-
-            console.log('newUser',newUser);
-            
-            if(newUser) router.push('/');
-
         } catch (error) {
             console.log(error);
         }

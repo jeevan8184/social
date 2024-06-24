@@ -22,7 +22,7 @@ export const getUserById=async(id:string,path:string)=> {
             .populate({
                 path:'friends',
                 model:User,
-                select:'_id username photo'
+                select:'_id username photo bio'
             })
 
         revalidatePath(path);
@@ -53,25 +53,33 @@ export const getUser=cache(async()=> {
     }
 })
 
-export const createUser=async({username,bio,photo,path}:CreateUserParams)=> {
+export const createUser=async({username,bio,photo,path,id}:CreateUserParams)=> {
     const {authId}=await verifySession();
 
+    console.log('photo',photo);
     try {
         await connectToDB();
 
-        const newUser=await User.create({
-            username,bio,photo,authId
-        })
-
-        revalidatePath(path);
-        console.log('newUser',newUser);
-        return JSON.parse(JSON.stringify(newUser));
+        if(id) {
+            const existUser=await User.findById(id);
+            if(!existUser) throw new Error('user does not found');
+            const newUser=await User.findByIdAndUpdate(existUser._id,{username,bio,photo},{new:true});
+            revalidatePath(path);
+            return JSON.parse(JSON.stringify(newUser));
+        }else{
+            const newUser=await User.create({
+                username,bio,photo,authId
+            });
+            revalidatePath(path);
+            console.log('newUser',newUser);
+            return JSON.parse(JSON.stringify(newUser));
+        }
     } catch (error) {
         console.log(error);
     }
 }
 
-export const fetchUsers=async({limit=4,query,page=1,path}:fetchUserProps)=> {
+export const fetchUsers=async({limit=10,query,page=1,path}:fetchUserProps)=> {
     const {authId}=await verifySession();
 
     try {
@@ -113,7 +121,7 @@ export const addFriend=async({userId,path}:addFriendParams)=> {
 
     try {
         await connectToDB();
-        const existUser=await User.findOne({authId})
+        const existUser=await User.findOne({authId});
         
         if(!existUser.friends.includes(userId)) {
             existUser.friends.push(userId);

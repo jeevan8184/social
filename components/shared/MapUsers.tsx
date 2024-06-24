@@ -19,7 +19,7 @@ const MapUsers = ({allUsers,totalPages}:MapUsersprops) => {
     <section className=' rounded-2xl px-1 py-2'>
       <div className=' flex flex-1 flex-col gap-2'>
         {allUsers?.map((user)=> (
-          <div className=' bg-slate-100 dark:bg-dark-4 opacity-90 rounded-full px-1'>
+          <div className=' bg-slate-100 dark:bg-dark-4 opacity-90 rounded-full px-1' key={user._id}>
             <div className=' flex-between'>
               <div className=' flex gap-2 items-center'>
                 <div className=' relative rounded-full h-11 w-11 overflow-hidden'>

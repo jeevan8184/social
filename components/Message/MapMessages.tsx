@@ -6,10 +6,12 @@ import DropdownPage from './DropdownPage';
 import Image from 'next/image';
 import ShowImg from '../related/ShowImg';
 import PostMapImages from '../related/PostMapImages';
+import { UserContext } from '../UserProvider';
 
 const MapMessages = ({isDelTrue}:{isDelTrue:boolean}) => {
 
-    const {messages,currUser,deleteMultiple,setDeleteMultiple}=useContext(ChatContext);
+    const {messages,currUser,deleteMultiple,setDeleteMultiple,setNewMsg}=useContext(ChatContext);
+    const {lastMessage,setReLoad}=useContext(UserContext);
 
     const [isActive, setIsActive] = useState(false);
     const [openMsgId, setOpenMsgId] = useState<string | null>(null);
@@ -17,6 +19,12 @@ const MapMessages = ({isDelTrue}:{isDelTrue:boolean}) => {
     const [selectedImg, setSelectedImg] = useState<string | null>(null);
 
     const scroll=useRef<HTMLDivElement>();
+
+    useEffect(()=> {
+       if(lastMessage) {
+        setOpenMsgId(lastMessage._id);
+       }
+    },[lastMessage]);
      
     useEffect(()=> {
       scroll.current?.scrollIntoView({behaviour:'smooth'});
@@ -49,8 +57,8 @@ const MapMessages = ({isDelTrue}:{isDelTrue:boolean}) => {
     }
 
   return (
-        <div className=' w-full h-full pb-12 scroll-smooth' >
-          <div className=' h-full '>
+        <div className=' w-full h-full min-h-[85vh] max-h-full pb-0 scroll-smooth flex-grow' >
+          <div className=' h-full overflow-y-auto'>
             {messages.length>0 ? (
               <div className=' py-2 pb-8 px-1 gap-2 '>
                 {messages.map((msg:IMessage)=> {
@@ -138,7 +146,9 @@ const MapMessages = ({isDelTrue}:{isDelTrue:boolean}) => {
                 <p 
                   className={` hi ${isActive && 'hidden'}`}
                   onClick={()=> {
-                    setIsActive(true)
+                    setIsActive(true);
+                    setNewMsg({text:'Hi'});
+                    setReLoad(true);
                   }}
                 >
                   Say 'Hi' 

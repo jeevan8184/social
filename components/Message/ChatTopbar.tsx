@@ -10,6 +10,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "@/components/ui/dropdown-menu"
+import { toast } from '../ui/use-toast';
+import { UserContext } from '../UserProvider';
 
 interface ChatTopbarProps {
     setIsDelTrue:Dispatch<SetStateAction<boolean>>,
@@ -20,13 +22,14 @@ const ChatTopbar = ({setIsDelTrue,isDelTrue}:ChatTopbarProps) => {
 
     const router=useRouter();
     const {newUser,onlineUsers,setIsDelete}=useContext(ChatContext);
+    const {setReLoad}=useContext(UserContext);
 
     const online=onlineUsers.some((u:IOnlineUsers)=> u.userId===newUser?._id);
     const typing=onlineUsers.some((u:IOnlineUsers)=> u.userId===newUser?._id && u.isTyping);
 
 
   return (
-    <div className=' sticky top-0 shadow-sm py-1 px-2 w-full h-full z-50 overflow-hidden bg-white dark:bg-dark-1 dark:shadow-xl m-0'>
+    <div className=' sticky top-0 shadow-sm py-1 px-4 w-full h-fit z-50 overflow-hidden bg-white dark:bg-dark-1 dark:shadow-xl'>
         <div className=' flex justify-between items-center'>
             <div className=' flex gap-4 items-center'>
                 <button
@@ -57,6 +60,7 @@ const ChatTopbar = ({setIsDelTrue,isDelTrue}:ChatTopbarProps) => {
                         onClick={()=> {
                             setIsDelete(true);
                             setIsDelTrue(false);
+                            setReLoad(true);
                         }}
                     >
                         <Check className=' h-5 w-5' />
@@ -66,18 +70,19 @@ const ChatTopbar = ({setIsDelTrue,isDelTrue}:ChatTopbarProps) => {
                     <DropdownMenuTrigger className=' border-none focus-visible:ring-0 focus-visible:ring-offset-0'>
                         <EllipsisVertical className=' h-5 w-5 border-none' />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className=' border border-white w-48 dropdown flex flex-col gap-0 down'>
-                        <div className=' hover:bg-grey-50 w-full flex gap-2 rounded-md cursor-pointer item'
+                    <DropdownMenuContent className=' border border-gray-600 w-48 dropdown flex flex-col gap-0 down'>
+                        <DropdownMenuItem 
+                            className='hover:bg-grey-50 w-full flex gap-2 rounded-md cursor-pointer item'
                             onClick={()=> {
-                                    setIsDelTrue((prev)=> !prev)
-                                }
-                            }
+                                toast({
+                                    description:'click msg to delete'
+                                })
+                                setIsDelTrue((prev)=> !prev);
+                            }}
                         >
-                            <DropdownMenuItem className='' >
-                                <Trash2 className=' mr-2 h-4 w-4' />
-                                <span>Delete</span>
-                            </DropdownMenuItem>    
-                        </div>
+                            <Trash2 className=' mr-2 h-4 w-4' />
+                            <span>Delete</span>
+                        </DropdownMenuItem>    
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>

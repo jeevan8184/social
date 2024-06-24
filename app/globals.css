@@ -66,7 +66,7 @@ body {
     @apply px-5 py-3 rounded-2xl border-none focus-visible:ring-offset-0 focus-visible:ring-0 bg-gray-50 
   }
   .navbar{
-    @apply max-w-6xl mx-0 lg:mx-auto xl:px-1 w-full px-4 py-3 rounded dark:bg-gray-900 
+    @apply max-w-6xl mx-0 lg:mx-auto xl:px-1 w-full px-4 py-3 max-sm:py-2 rounded dark:bg-gray-900 overflow-hidden
        bg-gray-50 bg-opacity-95 text-gray-700  border-gray-200 border-b shadow-md dark:border-black
   }
   .link {
@@ -92,7 +92,7 @@ body {
     @apply px-3 max-sm:px-0 py-6
   }
   .type{
-    @apply border border-gray-600 w-96  bg-white px-5 rounded-full flex-center focus-visible:ring-0 focus-visible:ring-offset-0
+    @apply border w-full max-w-96 max-sm:w-80 md:w-96 flex-grow border-gray-600 bg-white px-5 rounded-full flex-center focus-visible:ring-0 focus-visible:ring-offset-0
   }
   .hi {
     @apply cursor-pointer px-4 py-2 bg-blue-500/10 rounded-full text-blue-500 flex-center w-fit
@@ -139,9 +139,6 @@ body {
   .tab1 {
     @apply text-[18px] px-4 py-2 bg-transparent  active:border-blue-500
   }
-  .threadText{
-    @apply font-serif
-  }
 
   @media screen and (min-width: 0px) and (max-width: 412px) {
     .threadText {
@@ -154,6 +151,27 @@ body {
       @apply w-[300px] px-0
     }
   }
+
   
 }
 
+@layer base {
+  .underline-custom {
+    position: relative;
+    display: inline;
+  }
+  .underline-custom::after{
+    content: "";
+    position: absolute;
+    background-color: black;
+    opacity: 0.7;
+    height: 3px;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    border-radius: 10%;
+  }
+  .dark .underline-custom::after{
+    background-color: white;
+  }
+}

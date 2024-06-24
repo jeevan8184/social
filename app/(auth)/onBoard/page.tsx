@@ -2,22 +2,24 @@
 import UserForm from '@/components/related/UserForm'
 import { getUser } from '@/lib/actions/User.actions'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
-import { IUser } from '@/lib/database/models/User.model'
+import React, { useEffect } from 'react'
 
 const OnBoard = () => {
   const router=useRouter();
-
-  const [newUser, setNewUser] = useState<IUser | null>(null);
 
   useEffect(() => {
       const getAuthData = async () => {
         const user=await getUser();
         if(user) router.push('/');
-        setNewUser(user);
       };
       getAuthData();
   }, []);
+
+  const UserInitValues={
+    username: '',
+    bio:'',
+    photo:''
+}
   
   return (
     <section className=' wrapper  flex flex-col gap-2'>
@@ -25,7 +27,7 @@ const OnBoard = () => {
         <h2 className=' text-2xl font-semibold px-4 py-2'>Create Your profile</h2>
       </div>
       <div className='userForm'>
-          <UserForm />
+          <UserForm UserInitValues={UserInitValues} />
       </div>
       
     </section>

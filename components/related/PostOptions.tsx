@@ -19,6 +19,7 @@ import { Button } from '../ui/button';
 import { IUser } from '@/lib/database/models/User.model';
 import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { UserContext } from '../UserProvider';
   
 
 interface PostOptionsParams {
@@ -31,7 +32,9 @@ const PostOptions = ({post,setSavedPosts}:PostOptionsParams) => {
     const [liked, setLiked] = useState(false);
     const [likes, setLikes] = useState<IPost["likes"]>(post?.likes);
     const {currUser,setCurrUser}=useContext(ChatContext);
+    const {setNewPathname}=useContext(UserContext);
     const [isMarked, setIsMarked] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const router=useRouter();
     const {theme}=useTheme();
     const pathname=usePathname();
@@ -63,6 +66,7 @@ const PostOptions = ({post,setSavedPosts}:PostOptionsParams) => {
     const handleSave=async()=>{
 
         try {
+            setIsSaving(true);
             const user=await savePostToUser(post._id,currUser._id,pathname);
             if(user) {
                 setCurrUser(user);
@@ -80,6 +84,8 @@ const PostOptions = ({post,setSavedPosts}:PostOptionsParams) => {
             }
         } catch (error) {
             console.log(error);
+        }finally{
+            setIsSaving(false);
         }
     }
 
@@ -123,20 +129,36 @@ const PostOptions = ({post,setSavedPosts}:PostOptionsParams) => {
                     height={30}
                     width={30}
                     className=' cursor-pointer'
-                    onClick={()=> router.push(`/users?postId=${post._id}`)}
+                    onClick={()=> {
+                        setNewPathname(pathname); 
+                        router.push(`/users?postId=${post._id}`);
+                    }}
                 />
             </div>
         </div>
         <div className=''>
             <div className=' cursor-pointer'>
-                <Image
-                    src={newImg}
-                    alt='image' 
-                    height={24}
-                    width={24}
-                    className=''
-                    onClick={()=> handleSave()}
-                />
+                {isSaving ? (
+                    <div className=' animate-spin'>
+                        <Image
+                            src='/assets/icons/loader.svg'
+                            height={24}
+                            width={24}
+                            alt='image'
+                            className=''
+                        />
+                    </div>
+                ):(
+                    <Image
+                        src={newImg}
+                        alt='image' 
+                        height={24}
+                        width={24}
+                        className=''
+                        onClick={()=> handleSave()}
+                    />
+                )}
+                
             </div>
         </div>
     </div>

@@ -39,7 +39,7 @@ const NewImages = () => {
                                     className=''
                                 />
                             </div>
-                            <div className=' cursor-pointer absolute left-1 bottom-4 hidden group-hover:flex flex-col gap-1'
+                            <div className=' cursor-pointer absolute left-1 bottom-4 hidden max-sm:flex group-hover:flex flex-col gap-1'
                                 onClick={()=> router.push('/create')}
                             >
                                 <p className='  rounded-full p-1 bg-grey-50 w-fit dark:bg-dark-4 dark:text-white '><PlusIcon /></p>

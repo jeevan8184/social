@@ -1,25 +1,46 @@
 "use client"
 
-import { getUserChats } from '@/lib/actions/Chat.actions';
+import { getChatLastMessage, getUserChats } from '@/lib/actions/Chat.actions';
 import { IChat } from '@/lib/database/models/Chat.model';
 import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react'
 import { ChatContext } from './Message/ChatContext';
 import { usePathname } from 'next/navigation';
+import { IMessage } from '@/lib/database/models/Message.model';
 
 export const UserContext=createContext<any>(null);
- 
+
 export const UserProvider = ({children}:{children:ReactNode}) => {
 
-    const {currUser}=useContext(ChatContext);
+    const {currUser,newChat}=useContext(ChatContext);
     const [allChats, setAllChats] = useState<IChat[]>([]);
     const [chatDeleted, setChatDeleted] = useState<boolean>(false);
     const [isBoard, setIsBoard] = useState(false);
+    const [aMsg, setAMsg] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [newPathname, setNewPathname] = useState(null);
+    const [reLoad, setReLoad] = useState(false);
+    const [lastMessage, setLastMessage] = useState<IMessage>();
 
     const pathname=usePathname();
     const isMessage=pathname.includes('message');
 
     useEffect(()=> {
-      if(pathname.includes('onBoard')) {
+      const newFunc=async()=>{
+        if(reLoad || newChat) {
+          try {
+            const data=await getChatLastMessage(newChat._id,pathname);
+            setLastMessage(data);
+            setReLoad(false);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      }
+      newFunc();
+    },[reLoad,newChat]);
+
+    useEffect(()=> {
+      if(pathname.includes('onBoard') || pathname.includes('sign-in') || pathname.includes('sign-up')) {
         setIsBoard(true);
       }
     },[pathname]);
@@ -33,20 +54,34 @@ export const UserProvider = ({children}:{children:ReactNode}) => {
 
     useEffect(()=> {
       const newFunc=async()=> {
-        if(currUser || isMessage || chatDeleted) {
+       try {
+        setIsLoading(true);
+        if(currUser || isMessage || chatDeleted || aMsg) {
           const allChats=await getUserChats(currUser?._id,pathname);
           if(allChats) setAllChats(allChats);
           setChatDeleted(false);
+          setAMsg(false);
         }
+       } catch (error) {
+        console.log(error);
+       }finally{
+        setIsLoading(false);
+       }
       }
+      console.log('message');
       newFunc();
-    },[currUser,isMessage,chatDeleted]);
-
+    },[currUser,isMessage,chatDeleted,aMsg]);
 
   return (
     <UserContext.Provider value={{
         allChats,
-        setChatDeleted
+        setChatDeleted,
+        setAMsg,
+        isLoading,
+        setNewPathname,
+        newPathname,
+        lastMessage,
+        setReLoad
     }}
     >
         {children}

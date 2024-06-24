@@ -1,19 +1,52 @@
 
 "use client"
+import { ChatContext } from '@/components/Message/ChatContext';
 import Allchats from '@/components/Message/chats/Allchats';
 import { UserContext } from '@/components/UserProvider';
 import Loader from '@/components/shared/Loader';
 import SearchPage from '@/components/shared/SearchPage';
+import { getUserSearchChats } from '@/lib/actions/Chat.actions';
+import { IChat } from '@/lib/database/models/Chat.model';
+import { searchParamsProps } from '@/lib/types';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useContext } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useContext, useEffect, useState } from 'react';
 
-const Message = () => {
+const Message = ({searchParams}:searchParamsProps) => {
 
-  const {allChats}=useContext(UserContext);
+  const {allChats,isLoading}=useContext(UserContext);
+  const {currUser}=useContext(ChatContext);
+  const pathname=usePathname();
   const router=useRouter();
 
-  if(!allChats) return <Loader />
+  const [allNewChats, setAllNewChats] = useState<IChat[]>(allChats);
+
+  const searchText=(searchParams?.query as string) || "";
+  const page=Number(searchParams?.page) || 1;
+
+  useEffect(()=>{
+    if(allChats) {
+      setAllNewChats(allChats);
+    }
+  },[allChats]);
+
+  useEffect(()=> {
+    const newFunc=async()=>{
+      try {
+          if(searchText !=="") {
+            const data=await getUserSearchChats({userId:currUser?._id,searchTerm:searchText,path:pathname});
+            setAllNewChats(data);
+          }else{
+            setAllNewChats(allChats);
+          }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    newFunc();
+  },[searchText]);
+
+  if(isLoading) return <Loader />
 
   return (
     <div className=''>
@@ -37,7 +70,7 @@ const Message = () => {
               <SearchPage />
             </div>
             <div className=' flex flex-col gap-6'>
-              <Allchats allChats={allChats} />
+              <Allchats allChats={allNewChats}  />
             </div>
         </div>
       </div>
@@ -47,3 +80,4 @@ const Message = () => {
 }
 
 export default Message;
+

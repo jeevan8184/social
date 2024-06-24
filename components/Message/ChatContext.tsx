@@ -39,6 +39,8 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
     const [reactions, setReactions] = useState({msgId:null,emoji:null});
     const [postAndUsers, setpostAndUsers] = useState<{post:string | null,users:Array<string> | null}>({post:null,users:null});
     const [isPending, setIsPending] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
 
     const pathname=usePathname();
     const {startUpload}=useUploadThing("imageUploader");
@@ -72,6 +74,8 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
             if(newMsg.text || newMsg.image?.length>0) {
                 
                 try {
+                    setIsLoading(true);
+
                     let imageurl=null;
 
                    if(newMsg.image?.length>0) {
@@ -97,6 +101,8 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
                     setNewMsg({text:null,image:[]});
                 } catch (error) {
                     console.log(error);
+                }finally{
+                    setIsLoading(false);
                 }
             }
         }
@@ -249,7 +255,8 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
         setpostAndUsers,
         isPending,
         notifications,
-        setNotifications
+        setNotifications,
+        isLoading
     }}
     >
         {children}

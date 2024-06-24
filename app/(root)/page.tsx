@@ -19,8 +19,6 @@ const Home = ({searchParams}:searchParamsProps) => {
   const {theme,setTheme}=useTheme();
   const pathname=usePathname();
 
-  console.log('theme',theme);
-
   useEffect(()=> {
     const newFunc=async()=> {
       const data=await getAllPosts({limit:5,page,path:pathname});
@@ -39,14 +37,30 @@ const Home = ({searchParams}:searchParamsProps) => {
 
   if(allPosts.length<1) return <Loader />
 
-  console.log('allPosts',allPosts);
-
   return (
     <div className=' flex flex-col gap-4 h-full justify-between pb-20'>
       <div className=' flex flex-col py-3 gap-4'>
         <div className=' flex flex-col'>
           <NewImages />
-          <div className=' w-full'>
+          <div className=' md:hidden max-md:hidden max-sm:flex flex flex-col gap-4 px-2 w-full py-4 '>
+            {allPosts?.length>0 && allPosts.map((post)=> {
+              const isThread=post?.images.length>0;
+              if(isThread) {
+                return (
+                  <div className='' key={post._id}>
+                    <Postcard post={post} />
+                  </div>
+                )
+              }else{
+                return(
+                  <div className=' flex flex-1 flex-col ml-9 mr-3 xl:ml-20 max-sm:ml-3 max-w-xl border border-light-2 rounded-xl' key={post._id}>
+                    <Threads post={post} />
+                  </div>
+                )
+              }
+            })}
+          </div>
+          <div className=' w-full max-sm:hidden'>
             <Tabs defaultValue="photos" className=" w-full">
               <TabsList className=' m-5 flex gap-4'>
                 <TabsTrigger value="photos" className=' tab'>Photos</TabsTrigger>

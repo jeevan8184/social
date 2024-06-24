@@ -28,7 +28,6 @@ interface threadProps {
 const Threads = ({post,type,setDelPost,setSavedPosts}:threadProps) => {
     if(!post) return <Loader />
 
-    console.log("post",post);
     const router=useRouter();
     
 
@@ -87,7 +86,7 @@ const Threads = ({post,type,setDelPost,setSavedPosts}:threadProps) => {
                         </div>
                     </div>
                     <div className=''>
-                        <p className=' max-sm:-ml-3 mt-2 text-[15px] w-full text-wrap whitespace-normal threadText '>{post?.text}</p>
+                        <p className=' max-sm:-ml-3 mt-2 text-[15px] w-full text-wrap whitespace-normal '>{post?.text}</p>
                     </div>
                     {post?.tags?.map((tag,i)=> (
                         <p className=' text-blue-600 text-sm' key={i}>#{tag} </p>

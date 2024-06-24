@@ -25,8 +25,6 @@ const Fileuploader = ({value,handleChange,setFiles}:FileuploaderProps) => {
     accept:'image/*'?generateClientDropzoneAccept(['image/*']):undefined
   })
 
-
-
   return (
     <div {...getRootProps()} className=' flex-center cursor-pointer bg-grey-50 dark:bg-dark-4 rounded-2xl h-72'>
       <input {...getInputProps()} />

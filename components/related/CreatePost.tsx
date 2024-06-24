@@ -134,7 +134,7 @@ const CreatePost = () => {
                             {Files.length>0 && (
                             <div className=' flex flex-col  p-0'>
                                  <div className=' relative mt-4 max-w-3xl max-lg:max-w-xl w-full overflow-x-auto bg-grey-100 
-                                     snap-x snap-proximity h-full no-scrollbar py-4 max-md:max-w-sm max-sm:w-80
+                                     snap-x snap-mandatory snap-start h-full no-scrollbar py-4 max-md:max-w-sm max-sm:w-80
                                  '>
                                      <div className=' flex gap-8 max-sm:gap-6'>
                                          {filePreiews?.map(({file,url},i:number)=> (
@@ -146,7 +146,7 @@ const CreatePost = () => {
                                                         alt='image'
                                                         className=' rounded-xl object-cover group-hover:opacity-85 transition-opacity'
                                                      />
-                                                     <div className=' absolute top-1 hidden group-hover:flex right-1 
+                                                     <div className=' absolute top-1 hidden group-hover:flex right-1 max-md:flex 
                                                          rounded-full p-2 cursor-pointer bg-grey-50 dark:bg-gray-800'
                                                          onClick={()=> {
                                                              setFiles((prev)=> {

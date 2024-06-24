@@ -18,7 +18,7 @@ const RepliesPage = ({replies}:RepliesPageProps) => {
             {replies?.length>0 ? (
                     <div className=' flex flex-col gap-4'>
                         {replies.map((reply,i)=> (
-                            <div className=' flex flex-col gap-2' key={i} >
+                            <div className=' flex flex-col gap-2 max-w-sm' key={i} >
                                 <Postcard post={reply.postId} />
                                 <div className=' flex flex-col gap-1 px-6'>
                                     {reply?.comments.map((cmt)=> (

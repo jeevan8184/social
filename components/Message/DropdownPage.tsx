@@ -9,11 +9,13 @@ import {
 import { ChevronDown, Trash } from 'lucide-react';
 import { emojis1 } from '@/consants';
 import { IMessage } from '@/lib/database/models/Message.model';
+import { UserContext } from '../UserProvider';
 
 
 const DropdownPage = ({msg}:{msg:IMessage}) => {
 
     const {setDeleteId,setReactions}=useContext(ChatContext);
+    const {setReLoad}=useContext(UserContext);
     
   return (
         <DropdownMenu>
@@ -25,7 +27,10 @@ const DropdownPage = ({msg}:{msg:IMessage}) => {
             <DropdownMenuContent className=' down top-0 left-0 overflow-hidden'>
               <div className=' flex gap-1 '>
                 <DropdownMenuItem className=' left-0 item'
-                    onClick={()=> setDeleteId(msg._id)}>
+                    onClick={()=> {
+                      setDeleteId(msg._id);
+                      setReLoad(true);
+                    }}>
                   <Trash className=' font-normal h-5 w-5' />
                 </DropdownMenuItem>
                 <div className=' flex gap-0'>

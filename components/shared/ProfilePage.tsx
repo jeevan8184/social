@@ -22,6 +22,7 @@ const ProfilePage = ({user,type}:profileParams) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedImg, setSelectedImg] = useState<string | null>(null);
   const {currUser,setCurrUser}=useContext(ChatContext);
+  const [isLoading, setIsLoading] = useState(false);
 
   const pathname=usePathname();
 
@@ -51,9 +52,17 @@ const ProfilePage = ({user,type}:profileParams) => {
   }
 
   const handleMessage=async()=> {
-    const createdChat=await createChat({senderId:currUser?._id,receiverId:user._id});
-    if(createdChat) router.push(`/message/${createdChat._id}`);
 
+    try {
+      setIsLoading(true);
+      const createdChat=await createChat({senderId:currUser?._id,receiverId:user._id});
+      if(createdChat) router.push(`/message/${createdChat._id}`);
+
+    } catch (error) {
+      console.log(error);
+    }finally{
+      setIsLoading(false);
+    }
   }
 
   const handleImage=()=>{
@@ -103,9 +112,9 @@ const ProfilePage = ({user,type}:profileParams) => {
                           onClick={()=> {
                             handleMessage();
                           }}
-                          disabled={!isFriend}
+                          disabled={isLoading}
                         >
-                          message
+                          {isLoading ? 'wait...' : 'message'}
                         </Button>
                         <Button
                           className=' rounded-full px-6 text-white'
@@ -120,6 +129,24 @@ const ProfilePage = ({user,type}:profileParams) => {
               </div>
             </div>
             <div className=' flex flex-col px-3'>
+              {!type && (
+                <Button 
+                  className=' w-fit rounded-xl flex gap-2 bg-blue-500/10 text-[#877EFF] hover:bg-blue-500/20' 
+                  variant={undefined}
+                  onClick={()=> {
+                    router.push(`/onBoard/${user._id}`)
+                  }}
+                >
+                  <Image
+                      src='/assets/icon/edit.svg'
+                      className=''
+                      height={24}
+                      width={24}
+                      alt='image'
+                  />
+                  <span className=''>Edit profile</span>
+                </Button>
+              )}
               <h2 className=' font-semibold text-2xl'>{user?.username}</h2>
               <p className=' text-md text-gray-600 text-ellipsis'>{user?.bio}</p>
             </div>

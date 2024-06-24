@@ -11,6 +11,7 @@ import { getRepliesOfUser, getUserSavedPosts } from '@/lib/actions/User.actions'
 import RepliesPage from './RepliesPage'
 import { IComment } from '@/lib/database/models/Comments.model'
 import Threads from '../related/threads'
+import Loader from './Loader'
 
 interface ProfileSharesProps {
     user:IUser,
@@ -22,6 +23,7 @@ const ProfileShares = ({user}:ProfileSharesProps) => {
     const [savedPosts, setSavedPosts] = useState<IPost[]>([]);
     const [replies, setReplies] = useState<Array<{comments:IComment[],postId:IPost}>>([]);
     const [value, setValue] = useState<string>('photos');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [delPost, setDelPost] = useState<IPost | null>(null);
     const pathname=usePathname();
@@ -29,18 +31,24 @@ const ProfileShares = ({user}:ProfileSharesProps) => {
   
     useEffect(()=> {
       const newFunc=async()=> {
-        const data=await getAllUserPosts({limit:5,page:1,userId:user._id,path:pathname});
-        setAllPosts(data.allPosts);
+        try {
+            setIsLoading(true);
+            const data=await getAllUserPosts({limit:5,page:1,userId:user._id,path:pathname});
+            setAllPosts(data.allPosts);
 
-        const newData=await getUserSavedPosts(user._id,pathname);
-        setSavedPosts(newData);
+            const newData=await getUserSavedPosts(user._id,pathname);
+            setSavedPosts(newData);
 
-        const replies=await getRepliesOfUser(user._id,pathname);
-        console.log('replies',replies);
-        setReplies(replies);
+            const replies=await getRepliesOfUser(user._id,pathname);
+            setReplies(replies);
+        } catch (error) {
+            console.log(error);
+        }finally{
+            setIsLoading(false);
+        }
       }
       newFunc();
-    },[])
+    },[]);
     
     useEffect(()=> {
         const newFunc=async()=>{
@@ -64,9 +72,12 @@ const ProfileShares = ({user}:ProfileSharesProps) => {
 
     const imgPosts=allPosts.filter((post)=> post?.images.length>0);
     const posts=allPosts.filter((post)=> post?.images.length<1);
+    
+
+    if(isLoading) return <Loader />
 
     return (
-    <div className=' w-full pb-20'>
+    <div className=' w-full pb-20 px-2'>
         <Tabs defaultValue="posts" className=" w-full px-0">
             <TabsList className=' max-w-sm lg:max-w-xl  flex-between max-md:flex-between max-md:w-full w-full gap-1'>
                 {profileTabs.map((tab,i)=> (
@@ -84,13 +95,11 @@ const ProfileShares = ({user}:ProfileSharesProps) => {
             <TabsContent value="posts">
                 <Tabs defaultValue="photos" className=" w-full pt-5" >
                     <TabsList>
-                        <TabsTrigger value="photos" className='tab1 flex flex-col gap-2 w-fit ' onClick={()=>setValue('photos') }>
-                            <span className=' text-[17px]'>photos</span>
-                            <div className={` w-full h-0.5 bg-white ${value==='photos' ? 'flex':'hidden'}`} />
+                        <TabsTrigger value="photos" className='tab1 group' onClick={()=>setValue('photos') }>
+                            <span className={`text-[17px] ${value==='photos' ? 'underline-custom':''}`}>photos</span>
                         </TabsTrigger>
-                        <TabsTrigger value="threads" className='tab1 flex flex-col gap-2 w-fit group' onClick={()=>setValue('threads') }>
-                            <span className=' text-[17px]'>threads</span>
-                            <div className={` w-full h-0.5 bg-white ${value==='threads' ? 'flex' : 'hidden'}`} />
+                        <TabsTrigger value="threads" className='tab1 ' onClick={()=>setValue('threads') }>
+                            <span className={`text-[17px] ${value==='threads' ? 'underline-custom':''}`}>threads</span>
                         </TabsTrigger>
                     </TabsList>
                     <TabsContent value="photos">

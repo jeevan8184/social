@@ -14,14 +14,12 @@ const ChatMessage = () => {
   if(!messages || !newUser || !currUser) return <Loader />
 
   return (
-    <div className=' flex justify-between flex-col w-full '>
-        <div className=' flex flex-col'>
-           <ChatTopbar setIsDelTrue={setIsDelTrue} isDelTrue={isDelTrue} />
+    <div className=' flex flex-col h-full w-full'>
+        <div className=' flex flex-col flex-between'>
+            <ChatTopbar setIsDelTrue={setIsDelTrue} isDelTrue={isDelTrue} />
             <MapMessages isDelTrue={isDelTrue}  />
         </div>
-        <div className=''>
-          <InputMsg />
-        </div>
+        <InputMsg />
     </div>
   )
 }
