@@ -123,7 +123,7 @@ const ProfileShares = ({user}:ProfileSharesProps) => {
                     <TabsContent value="threads">
                         <div className=' flex flex-col gap-6 w-full py-4 justify-center'>
                             {posts?.length>0 ? posts.map((post)=> (
-                            <div className=' flex flex-1 flex-col ml-9 mr-3 xl:ml-20 max-sm:ml-0.5 max-w-xl border border-light-2 rounded-xl' key={post._id}>
+                            <div className=' flex flex-1 flex-col  md:ml-9 md:mr-3 xl:ml-20  max-w-xl border border-light-2 rounded-xl' key={post._id}>
                                 <Threads post={post} type={!pathname.includes('/profile/') ? 'profile':undefined} setDelPost={setDelPost} setSavedPosts={setSavedPosts} />
                             </div>
                             )):(
