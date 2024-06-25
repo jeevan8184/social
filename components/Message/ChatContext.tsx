@@ -40,6 +40,7 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
     const [postAndUsers, setpostAndUsers] = useState<{post:string | null,users:Array<string> | null}>({post:null,users:null});
     const [isPending, setIsPending] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [newNotify, setNewNotify] = useState<INotify | null>(null);
 
 
     const pathname=usePathname();
@@ -205,6 +206,7 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
             setOnlineUsers(onlineUsers);
         })
         socket.on('notify',(n)=> {
+            setNewNotify({...n});
             setNotifications((prev)=> [...prev,n]);
         })
         socket.on('delmsgs',(msgs)=> {
@@ -256,7 +258,9 @@ export const ChatProvider:FC<chatProviderProps> = ({children}) => {
         isPending,
         notifications,
         setNotifications,
-        isLoading
+        isLoading,
+        setNewNotify,
+        newNotify
     }}
     >
         {children}

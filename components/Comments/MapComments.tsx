@@ -14,10 +14,12 @@ import { ChevronDown } from 'lucide-react'
 interface MapCommentsParams {
     c:IComment,
     setComments:Dispatch<SetStateAction<IComment[]>>,
-    post:IPost
+    post:IPost,
+    cmtReload:string,
+    setCmtReload:Dispatch<SetStateAction<Boolean>>
 }
 
-const MapComments = ({c,setComments,post}:MapCommentsParams) => {
+const MapComments = ({c,setComments,post,setCmtReload,cmtReload}:MapCommentsParams) => {
 
     const pathname=usePathname();
     const [replyCmt, setReplyCmt] = useState<IComment | null>(null);
@@ -25,29 +27,34 @@ const MapComments = ({c,setComments,post}:MapCommentsParams) => {
     const [childCmts, setChildCmts] = useState<IComment[]>([]);
     const [isPending, setIsPending] = useState(false);
     const [showReplies, setShowReplies] = useState(false);
-
-    useEffect(()=> {
-        if(c) {
-            setChildCmts(c?.childrens);
-        }
-    },[]);
+    const [isReply, setIsReply] = useState(false);
 
     const handleGet=async()=>{
 
         try {
-            setIsPending(true);
+            if(isReply) {
+                setIsPending(true);
+            }
             const comments=await getCmtWithChilds(c._id,pathname);
             if(comments) {
                 setChildCmts(comments?.childrens);
             }
-            setShowReplies(true);
-            console.log('mapCmts',comments);
+            if(isReply) {
+                setShowReplies(true);
+                setIsReply(false);
+            }
         } catch (error) {
             console.log(error);
         }finally{
             setIsPending(false);
         }
     }
+
+    useEffect(()=> {
+        if(c || cmtReload) {
+            handleGet();
+        }
+    },[c,cmtReload]);
 
   return (
     <div className=' flex flex-1 flex-col gap-1'>
@@ -83,7 +90,10 @@ const MapComments = ({c,setComments,post}:MapCommentsParams) => {
                             <div className=' flex gap-3'>
                                 <p className=' text-sm text-[14px] text-gray-600'>{moment(c.createdAt).fromNow()}</p>
                                 <div className={`text-blue-600 text-sm cursor-pointer ${ showReplies ? ' hidden':''}`}
-                                    onClick={()=> handleGet()}
+                                    onClick={()=> {
+                                        setIsReply(true);
+                                        handleGet();
+                                    }}
                                 >
                                     {isPending ? (
                                         <div className=' relative animate-spin'>

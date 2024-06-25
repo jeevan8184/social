@@ -10,7 +10,16 @@ import React, { useContext, useEffect } from 'react'
 
 const MessageUser = ({params:{id}}:{params:{id:string}}) => {
   
-  const {setMessages,setNewUser,setNewChat,newChat,currUser,setNotifications}=useContext(ChatContext);
+  const {
+    setMessages,
+    setNewUser,
+    setNewChat,
+    newChat,
+    currUser,
+    setNotifications,
+    setNewNotify,
+    newNotify
+  }=useContext(ChatContext);
 
   useEffect(() => {
       const getAuthData = async () => {
@@ -30,14 +39,16 @@ const MessageUser = ({params:{id}}:{params:{id:string}}) => {
   }, [id]);
 
   useEffect(()=> {
-    if(newChat) {
+    if(newChat || newNotify) {
       const user=newChat?.participants?.find((p:IUser)=> p._id !==currUser?._id);
-      setNotifications((notifications:INotify[])=> {
-        const newNotifies=notifications.filter((notify:INotify)=> notify.senderId !== user._id);
-        return newNotifies;
-      });
+      if(user) {
+        setNotifications((notifications:INotify[])=> {
+          const newNotifies=notifications.map((notify:INotify)=> notify.senderId !== user._id);
+          return newNotifies;
+        });
+      }
     }
-  },[newChat]);
+  },[newChat,newNotify]);
 
   return (
     <div className=' z-0 flex flex-1 flex-col '>

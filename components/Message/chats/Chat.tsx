@@ -42,7 +42,7 @@ const Chat = ({chat,isDelete,delChats,setDelChats}:ChatProps) => {
         }
         const LastMsgFn=setTimeout(()=> {
             newFunc();
-        },200);
+        },100);
         
         return ()=> clearTimeout(LastMsgFn);
     },[chat,isMessage,reLoad]);
@@ -64,6 +64,7 @@ const Chat = ({chat,isDelete,delChats,setDelChats}:ChatProps) => {
     const isOnline=onlineUsers.some((newUser:IOnlineUsers)=> newUser.userId===user._id);
     const isTyping=onlineUsers.some((newUser:IOnlineUsers)=>newUser.userId===user._id && newUser.isTyping);
 
+    console.log('notifications',notifications);
     let y= chatNotifies[chatNotifies.length-1]?.newMsg 
 
   return (
@@ -112,7 +113,7 @@ const Chat = ({chat,isDelete,delChats,setDelChats}:ChatProps) => {
                     ):(
                         <div className=' '>
                             {chatNotifies.length>0 && !isDelete && (
-                                <div className=' text-black font-semibold bg-green-500 text-[15px] rounded-full px-1.5 text-sm'>{chatNotifies.length}</div>
+                                <div className=' text-white font-semibold bg-green-500 text-[15px] rounded-full px-1.5 text-sm'>{chatNotifies.length}</div>
                             )}
                         </div>
                     )}

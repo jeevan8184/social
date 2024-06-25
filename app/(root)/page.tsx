@@ -23,7 +23,7 @@ const Home = ({searchParams}:searchParamsProps) => {
     const newFunc=async()=> {
       const data=await getAllPosts({limit:5,page,path:pathname});
       console.log('allPostssss',data);
-      setAllPosts(data.allPosts);
+      setAllPosts(data?.allPosts);
        
       if(theme===undefined) {
         setTheme('light');

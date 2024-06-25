@@ -28,17 +28,19 @@ const CommentSection = () => {
     const [text, setText] = useState<string>('');
     const [comments, setComments] = useState<IComment[]>([]);
     const [isPending, setIsPending] = useState(false);
+    const [cmtReload, setCmtReload] = useState(false);
     
     useEffect(()=> {
         const newFunc=async()=> {
-            if(postId) {
+            if(postId || cmtReload) {
                 const post=await getPostWithId(postId,pathname);
                 setPost(post);
                 setComments(post?.comments);
+                setCmtReload(false);
             }
         }
         newFunc();
-    },[postId]);
+    },[postId,cmtReload]);
 
     const handleChange=async()=>{
 
@@ -48,6 +50,7 @@ const CommentSection = () => {
                 const newComment=await createComment({postId:post?._id,userId:currUser?._id,text,path:pathname});
                 if(newComment) {
                     setComments((prev)=> [newComment,...prev]);
+                    setCmtReload(true);
                 }
             }
             setText('');
@@ -163,8 +166,13 @@ const CommentSection = () => {
                 </div>
                 <div className=' flex flex-1 flex-col gap-4'>
                     <h1 className=' font-semibold p-4 max-md:px-2'>Comments to Your post</h1>
-                    <CommentsPage comments={comments} setComments={setComments} post={post} />
-                
+                    <CommentsPage 
+                        comments={comments} 
+                        setComments={setComments} 
+                        post={post} 
+                        setCmtReload={setCmtReload}
+                        cmtReload={cmtReload}
+                    />
                 </div>
             </div>
          </div>
